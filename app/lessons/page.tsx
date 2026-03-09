@@ -20,16 +20,16 @@ export default function LessonsPage() {
                 </p>
             </div>
 
-            <div className="relative pt-8 pb-32">
+            <div className="relative pt-8 pb-40">
                 {/* Winding path line behind nodes */}
                 <div className="absolute left-[2.25rem] md:left-1/2 top-10 bottom-10 w-2 bg-slate-200 dark:bg-zinc-800 -translate-x-[0.5rem] md:-translate-x-1/2 rounded-full overflow-hidden z-0">
                     <div
                         className="absolute top-0 left-0 right-0 bg-amharic-green transition-all duration-1000 ease-in-out"
-                        style={{ height: `${Math.min((completedLessons.length / mockLessonsData.length) * 100 + 10, 100)}%` }}
+                        style={{ height: `${Math.min((completedLessons.length / mockLessonsData.length) * 100 + 5, 100)}%` }}
                     />
                 </div>
 
-                <div className="space-y-16">
+                <div className="space-y-32">
                     {mockLessonsData.map((lesson, index) => {
                         const isCompleted = completedLessons.includes(lesson.id);
                         // First lesson is always unlocked. Others are unlocked if previous is complete.
@@ -54,8 +54,8 @@ export default function LessonsPage() {
                                     >
                                         <Link href={`/practice?lesson=${lesson.id}`} className={isUnlocked ? 'cursor-pointer' : 'cursor-not-allowed pointer-events-none'}>
                                             <div className={`glass-card p-6 rounded-2xl border-2 transition-all hover:scale-105 active:scale-95 ${isCurrent ? 'border-amharic-green shadow-lg shadow-amharic-green/20' :
-                                                    isCompleted ? 'border-amharic-yellow/50 bg-amharic-yellow/5' :
-                                                        'border-slate-200 dark:border-zinc-800'
+                                                isCompleted ? 'border-amharic-yellow/50 bg-amharic-yellow/5' :
+                                                    'border-slate-200 dark:border-zinc-800'
                                                 }`}>
                                                 <div className="flex justify-between items-start mb-2">
                                                     <h3 className={`text-xl font-bold ${isCurrent ? 'text-amharic-green' : isCompleted ? 'text-slate-800 dark:text-slate-200' : 'text-slate-500'}`}>
@@ -87,8 +87,8 @@ export default function LessonsPage() {
                                     >
                                         <Link href={`/practice?lesson=${lesson.id}`} className={isUnlocked ? 'cursor-pointer' : 'cursor-not-allowed pointer-events-none'}>
                                             <div className={`glass-card p-5 rounded-2xl border-2 ${isCurrent ? 'border-amharic-green shadow-lg shadow-amharic-green/20' :
-                                                    isCompleted ? 'border-amharic-yellow/50' :
-                                                        'border-slate-200 dark:border-zinc-800'
+                                                isCompleted ? 'border-amharic-yellow/50' :
+                                                    'border-slate-200 dark:border-zinc-800'
                                                 }`}>
                                                 <div className="flex justify-between items-center mb-1">
                                                     <h3 className="text-lg font-bold">{lesson.title}</h3>
@@ -112,8 +112,8 @@ export default function LessonsPage() {
                                     viewport={{ once: true }}
                                     transition={{ type: "spring", stiffness: 300, damping: 20 }}
                                     className={`absolute left-4 md:left-1/2 md:-translate-x-1/2 w-16 h-16 rounded-full flex items-center justify-center border-4 z-20 shadow-xl ${isCurrent ? 'bg-amharic-green border-white dark:border-zinc-950 text-white scale-110' :
-                                            isCompleted ? 'bg-amharic-yellow border-white dark:border-zinc-950 text-amber-900' :
-                                                'bg-slate-200 dark:bg-zinc-800 border-slate-100 dark:border-zinc-900 text-slate-400'
+                                        isCompleted ? 'bg-amharic-yellow border-white dark:border-zinc-950 text-amber-900' :
+                                            'bg-slate-200 dark:bg-zinc-800 border-slate-100 dark:border-zinc-900 text-slate-400'
                                         }`}
                                 >
                                     {isCompleted ? <Star className="w-8 h-8 fill-current" /> :

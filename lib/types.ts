@@ -21,5 +21,6 @@ export interface UserProgress {
   totalXP: number;
   level: number;
   streak: number;
+  lastLoginDate: string;
   masteredWords: string[];
 }

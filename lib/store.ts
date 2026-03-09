@@ -1,6 +1,6 @@
-import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
-import { UserProgress } from './types'
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+import { UserProgress } from './types';
 
 interface AppState {
     progress: UserProgress;
@@ -8,6 +8,9 @@ interface AppState {
     completeLesson: (lessonId: string) => void;
     masterWord: (wordId: string) => void;
     updateStreak: () => void;
+    // Auth state
+    uid: string | null;
+    setUid: (uid: string | null) => void;
 }
 
 const initialProgress: UserProgress = {
@@ -15,57 +18,73 @@ const initialProgress: UserProgress = {
     totalXP: 0,
     level: 1,
     streak: 0,
+    lastLoginDate: new Date().toISOString().split('T')[0],
     masteredWords: [],
-}
+};
+
+const calculateLevel = (xp: number) => Math.floor(xp / 100) + 1;
 
 export const useAppStore = create<AppState>()(
     persist(
         (set) => ({
             progress: initialProgress,
+            uid: null,
 
-            addXP: (amount) => set((state) => {
-                const newXP = state.progress.totalXP + amount;
-                const newLevel = Math.floor(Math.sqrt(newXP / 50)) + 1; // calculateLevel logic
-                return {
+            setUid: (uid) => set({ uid }),
+
+            addXP: (amount) =>
+                set((state) => {
+                    const newXP = state.progress.totalXP + amount;
+                    return {
+                        progress: {
+                            ...state.progress,
+                            totalXP: newXP,
+                            level: calculateLevel(newXP),
+                        },
+                    };
+                }),
+
+            completeLesson: (lessonId) =>
+                set((state) => ({
                     progress: {
                         ...state.progress,
-                        totalXP: newXP,
-                        level: newLevel
-                    }
-                }
-            }),
+                        completedLessons: state.progress.completedLessons.includes(lessonId)
+                            ? state.progress.completedLessons
+                            : [...state.progress.completedLessons, lessonId],
+                    },
+                })),
 
-            completeLesson: (lessonId) => set((state) => {
-                if (state.progress.completedLessons.includes(lessonId)) return state;
-                return {
+            masterWord: (wordId) =>
+                set((state) => ({
                     progress: {
                         ...state.progress,
-                        completedLessons: [...state.progress.completedLessons, lessonId]
-                    }
-                }
-            }),
+                        masteredWords: state.progress.masteredWords.includes(wordId)
+                            ? state.progress.masteredWords
+                            : [...state.progress.masteredWords, wordId],
+                    },
+                })),
 
-            masterWord: (wordId) => set((state) => {
-                if (state.progress.masteredWords.includes(wordId)) return state;
-                return {
-                    progress: {
-                        ...state.progress,
-                        masteredWords: [...state.progress.masteredWords, wordId]
-                    }
-                }
-            }),
+            updateStreak: () =>
+                set((state) => {
+                    const today = new Date().toISOString().split('T')[0];
+                    const lastLogin = state.progress.lastLoginDate;
 
-            updateStreak: () => set((state) => {
-                return {
-                    progress: {
-                        ...state.progress,
-                        streak: state.progress.streak + 1
-                    }
-                }
-            })
+                    if (today === lastLogin) return state;
+
+                    const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+                    const newStreak = lastLogin === yesterday ? state.progress.streak + 1 : 1;
+
+                    return {
+                        progress: {
+                            ...state.progress,
+                            streak: newStreak,
+                            lastLoginDate: today,
+                        },
+                    };
+                }),
         }),
         {
-            name: 'amharicquest-storage',
+            name: 'amharic-quest-storage',
         }
     )
-)
+);

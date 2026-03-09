@@ -20,9 +20,6 @@ export function Sidebar() {
     return (
         <nav className="hidden md:flex flex-col w-64 h-screen fixed left-0 top-0 border-r border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-6 z-50">
             <div className="flex items-center gap-3 mb-10 px-2">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amharic-green to-amharic-yellow flex items-center justify-center text-white font-bold text-xl shadow-lg">
-                    A
-                </div>
                 <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-amharic-green to-amharic-yellow">
                     AmharicQuest
                 </h1>
