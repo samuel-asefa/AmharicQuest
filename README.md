@@ -1,5 +1,5 @@
 <h2 align="center"><em><code>AmharicQuest</code></em></h2>
-An Amharic learning app created with Next.js, Firebase, and Framer.
+An Amharic learning app with a full Fidel (alphabet) reference, vocabulary quizzes, and XP tracking.
 
 ## Features
 - Fidel Explorer
