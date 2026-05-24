@@ -39,6 +39,15 @@ body {
   color: var(--foreground);
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
   transition: background-color 0.3s ease, color 0.3s ease;
+  background-image: radial-gradient(rgba(0, 158, 96, 0.05) 1px, transparent 1px), radial-gradient(rgba(0, 158, 96, 0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+  background-position: 0 0, 20px 20px;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  }
 }
 
 /* Base selection styling */
