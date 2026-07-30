@@ -3,33 +3,87 @@ import { motion, HTMLMotionProps } from "framer-motion"
 import { cn } from "@/lib/utils"
 
 export interface ButtonProps extends HTMLMotionProps<"button"> {
-    variant?: "default" | "secondary" | "destructive" | "outline" | "ghost" | "glass";
+    variant?: "default" | "secondary" | "blue" | "destructive" | "outline" | "ghost";
     size?: "default" | "sm" | "lg" | "icon";
 }
 
+const variantStyles: Record<string, React.CSSProperties> = {
+    default: {
+        backgroundColor: 'var(--duo-green)',
+        color: '#ffffff',
+        boxShadow: '0 4px 0 0 var(--duo-green-border)',
+        border: 'none',
+    },
+    secondary: {
+        backgroundColor: 'var(--duo-yellow)',
+        color: '#5d4100',
+        boxShadow: '0 4px 0 0 var(--duo-yellow-border)',
+        border: 'none',
+    },
+    blue: {
+        backgroundColor: 'var(--duo-blue)',
+        color: '#ffffff',
+        boxShadow: '0 4px 0 0 var(--duo-blue-border)',
+        border: 'none',
+    },
+    destructive: {
+        backgroundColor: 'var(--duo-red)',
+        color: '#ffffff',
+        boxShadow: '0 4px 0 0 var(--duo-red-border)',
+        border: 'none',
+    },
+    outline: {
+        backgroundColor: 'transparent',
+        color: 'var(--duo-blue)',
+        border: '2px solid var(--border)',
+        boxShadow: '0 4px 0 0 var(--border)',
+    },
+    ghost: {
+        backgroundColor: 'transparent',
+        color: 'var(--text-secondary)',
+        border: 'none',
+        boxShadow: 'none',
+    },
+};
+
+const sizeStyles: Record<string, string> = {
+    default: 'h-12 px-6 text-sm',
+    sm: 'h-9 px-4 text-xs rounded-xl',
+    lg: 'h-14 px-8 text-base',
+    icon: 'h-12 w-12',
+};
+
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-    ({ className, variant = "default", size = "default", ...props }, ref) => {
+    ({ className, variant = "default", size = "default", style, ...props }, ref) => {
         return (
             <motion.button
                 ref={ref}
-                whileHover={{ scale: 1.02, y: -2 }}
-                whileTap={{ scale: 0.98, y: 0 }}
+                whileTap={{ y: 4 }}
                 className={cn(
-                    "inline-flex items-center justify-center whitespace-nowrap rounded-xl text-sm font-bold ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
-                    {
-                        "bg-[#009E60] text-white hover:bg-[#33b180] shadow-md shadow-[#009E60]/20": variant === "default",
-                        "bg-[#FCD116] text-slate-900 hover:bg-[#fde05f] shadow-md shadow-[#FCD116]/20": variant === "secondary",
-                        "bg-[#CE1126] text-white hover:bg-[#d84151] shadow-md shadow-[#CE1126]/20": variant === "destructive",
-                        "border-2 border-slate-200 bg-transparent hover:bg-slate-100 hover:text-slate-900 dark:border-slate-800 dark:hover:bg-slate-800 dark:hover:text-slate-50": variant === "outline",
-                        "hover:bg-slate-100 dark:hover:bg-slate-800": variant === "ghost",
-                        "glass text-foreground hover:bg-white/90 dark:hover:bg-black/50": variant === "glass",
-                        "h-12 px-6 py-2": size === "default",
-                        "h-9 rounded-lg px-4": size === "sm",
-                        "h-14 rounded-2xl px-8 text-lg": size === "lg",
-                        "h-12 w-12": size === "icon",
-                    },
+                    "inline-flex items-center justify-center whitespace-nowrap rounded-2xl font-800 tracking-wide uppercase text-sm",
+                    "transition-[filter] duration-75",
+                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
+                    "disabled:pointer-events-none disabled:opacity-50",
+                    sizeStyles[size],
                     className
                 )}
+                style={{ ...variantStyles[variant], ...style }}
+                onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLButtonElement).style.filter = 'brightness(1.05)';
+                }}
+                onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLButtonElement).style.filter = 'brightness(1)';
+                }}
+                onMouseDown={(e) => {
+                    const btn = e.currentTarget as HTMLButtonElement;
+                    const currentShadow = btn.style.boxShadow;
+                    btn.dataset.prevShadow = currentShadow;
+                    btn.style.boxShadow = currentShadow.replace(/0 4px/, '0 0px').replace(/0 3px/, '0 0px');
+                }}
+                onMouseUp={(e) => {
+                    const btn = e.currentTarget as HTMLButtonElement;
+                    btn.style.boxShadow = btn.dataset.prevShadow || '';
+                }}
                 {...props}
             />
         )

@@ -3,61 +3,104 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Home, BookOpen, Library, GraduationCap, Settings } from 'lucide-react';
+import { Home, BookOpen, Library, GraduationCap, User, Flame, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useAppStore } from '@/lib/store';
 
 const navItems = [
-    { href: '/', label: 'Home', icon: Home },
+    { href: '/', label: 'Learn', icon: Home },
     { href: '/fidel', label: 'Alphabet', icon: BookOpen },
     { href: '/lessons', label: 'Lessons', icon: GraduationCap },
     { href: '/practice', label: 'Practice', icon: Library },
-    { href: '/profile', label: 'Profile', icon: Settings },
+    { href: '/profile', label: 'Profile', icon: User },
 ];
 
 export function Sidebar() {
     const pathname = usePathname();
+    const { progress } = useAppStore();
 
     return (
-        <nav className="hidden md:flex flex-col w-64 h-screen fixed left-0 top-0 border-r border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-6 z-50">
-            <div className="flex items-center gap-3 mb-10 px-2">
-                <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-amharic-green to-amharic-yellow">
-                    AmharicQuest
-                </h1>
+        <nav className="hidden md:flex flex-col w-72 h-screen fixed left-0 top-0 z-50"
+            style={{
+                backgroundColor: 'var(--bg-primary)',
+                borderRight: '2px solid var(--border)',
+            }}
+        >
+            {/* Logo */}
+            <div className="px-6 py-8">
+                <Link href="/" className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-2xl flex items-center justify-center text-xl font-black"
+                        style={{ backgroundColor: 'var(--duo-green)', color: 'white', boxShadow: '0 3px 0 0 var(--duo-green-border)' }}>
+                        አ
+                    </div>
+                    <span className="text-2xl font-black" style={{ color: 'var(--text-primary)', letterSpacing: '-0.03em' }}>
+                        AmharicQuest
+                    </span>
+                </Link>
             </div>
 
-            <div className="flex-1 space-y-2">
+            {/* Navigation */}
+            <div className="flex-1 px-4 space-y-1">
                 {navItems.map((item) => {
                     const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
                     return (
-                        <Link key={item.href} href={item.href} className="block relative">
+                        <Link key={item.href} href={item.href}
+                            className={cn(
+                                'nav-item',
+                                isActive && 'nav-item-active'
+                            )}
+                            style={isActive ? {
+                                color: 'var(--duo-blue)',
+                                backgroundColor: 'rgba(28, 176, 246, 0.08)',
+                                borderColor: 'rgba(28, 176, 246, 0.25)',
+                                boxShadow: '0 2px 0 0 rgba(28, 176, 246, 0.15)',
+                            } : {}}
+                        >
                             {isActive && (
                                 <motion.div
-                                    layoutId="sidebar-active"
-                                    className="absolute inset-0 bg-amharic-green/10 dark:bg-amharic-green/20 rounded-xl border border-amharic-green/20"
+                                    layoutId="sidebar-indicator"
+                                    className="absolute left-0 inset-y-2 w-1 rounded-full"
+                                    style={{ backgroundColor: 'var(--duo-blue)' }}
                                     initial={false}
-                                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                                    transition={{ type: 'spring', stiffness: 400, damping: 35 }}
                                 />
                             )}
-                            <div className={cn(
-                                "relative flex items-center gap-3 px-4 py-3 rounded-xl transition-colors",
-                                isActive ? "text-amharic-green font-semibold" : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-slate-200"
-                            )}>
-                                <item.icon className={cn("w-5 h-5", isActive && "text-amharic-green")} />
-                                <span>{item.label}</span>
-                            </div>
+                            <item.icon className="w-5 h-5 flex-shrink-0" />
+                            <span>{item.label}</span>
                         </Link>
                     );
                 })}
             </div>
 
-            {/* Mini Streak/User Info placeholder at bottom */}
-            <div className="mt-auto glass-card p-4 rounded-xl flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-slate-200 dark:bg-zinc-800 flex items-center justify-center">
-                    🔥
+            {/* User stats footer */}
+            <div className="p-4 m-4 rounded-2xl"
+                style={{
+                    backgroundColor: 'var(--bg-secondary)',
+                    border: '2px solid var(--border)',
+                    boxShadow: '0 3px 0 0 var(--border)',
+                }}
+            >
+                <div className="flex items-center justify-between mb-3">
+                    <span className="text-xs font-800 uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
+                        Your Stats
+                    </span>
                 </div>
-                <div>
-                    <div className="text-sm font-semibold">2 Day Streak!</div>
-                    <div className="text-xs text-slate-500">Keep it up!</div>
+                <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-1.5">
+                        <Flame className="w-5 h-5" style={{ color: 'var(--duo-orange)' }} />
+                        <span className="font-900 text-base" style={{ color: 'var(--text-primary)' }}>
+                            {progress.streak}
+                        </span>
+                        <span className="text-xs font-700" style={{ color: 'var(--text-muted)' }}>streak</span>
+                    </div>
+                    <div className="w-px h-4" style={{ backgroundColor: 'var(--border)' }} />
+                    <div className="flex items-center gap-1.5">
+                        <Zap className="w-5 h-5" style={{ color: 'var(--duo-yellow)' }} />
+                        <span className="font-900 text-base" style={{ color: 'var(--text-primary)' }}>
+                            {progress.totalXP}
+                        </span>
+                        <span className="text-xs font-700" style={{ color: 'var(--text-muted)' }}>XP</span>
+                    </div>
                 </div>
             </div>
         </nav>

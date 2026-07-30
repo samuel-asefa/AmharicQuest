@@ -1,199 +1,326 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, Variants } from 'framer-motion';
 import Link from 'next/link';
 import { useAppStore } from '@/lib/store';
-import { BookOpen, Library, GraduationCap, Flame, Star, Award, ArrowRight, Sparkles } from 'lucide-react';
+import { BookOpen, Library, GraduationCap, Flame, Zap, Trophy, ArrowRight, Target, Star } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { mockLessonsData } from '@/lib/data';
 
+const staggerContainer: Variants = {
+    hidden: {},
+    show: {
+        transition: {
+            staggerChildren: 0.07,
+        },
+    },
+};
+
+const fadeUp: Variants = {
+    hidden: { opacity: 0, y: 16 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.3, ease: 'easeOut' as const } },
+};
+
 export default function Dashboard() {
-  const { progress } = useAppStore();
+    const { progress } = useAppStore();
 
-  // Calculate stats
-  const nextLesson = mockLessonsData.find(l => !progress.completedLessons.includes(l.id)) || mockLessonsData[mockLessonsData.length - 1];
-  const totalLessons = mockLessonsData.length;
-  const completedLessonsCount = progress.completedLessons.length;
-  const progressPercentage = Math.round((completedLessonsCount / totalLessons) * 100) || 0;
+    const nextLesson = mockLessonsData.find(l => !progress.completedLessons.includes(l.id)) || mockLessonsData[mockLessonsData.length - 1];
+    const totalLessons = mockLessonsData.length;
+    const completedLessonsCount = progress.completedLessons.length;
+    const progressPercentage = Math.round((completedLessonsCount / totalLessons) * 100) || 0;
 
-  // Example daily goal calculation (simplified)
-  const dailyGoalXP = 50;
-  const currentDailyXP = Math.min(progress.totalXP % dailyGoalXP, dailyGoalXP);
-  const dailyProgress = Math.round((currentDailyXP / dailyGoalXP) * 100);
+    const dailyGoalXP = 50;
+    const currentDailyXP = Math.min(progress.totalXP % dailyGoalXP, dailyGoalXP);
+    const dailyProgress = Math.round((currentDailyXP / dailyGoalXP) * 100);
 
-  return (
-    <div className="max-w-6xl mx-auto p-6 md:p-12 relative">
-      {/* Background Blobs */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-amharic-yellow/10 rounded-full blur-[120px] pointer-events-none -z-10" />
-      <div className="absolute bottom-0 left-0 w-96 h-96 bg-amharic-green/10 rounded-full blur-[120px] pointer-events-none -z-10" />
+    return (
+        <div className="max-w-5xl mx-auto p-6 md:p-10">
+            {/* Page Header */}
+            <motion.div
+                variants={staggerContainer}
+                initial="hidden"
+                animate="show"
+                className="mb-10"
+            >
+                <motion.div variants={fadeUp}>
+                    <div className="inline-flex items-center gap-2 mb-3 chip chip-green">
+                        <Star className="w-3 h-3" />
+                        Keep up your streak!
+                    </div>
+                    <h1 className="text-4xl md:text-5xl font-black mb-2" style={{ color: 'var(--text-primary)', letterSpacing: '-0.03em' }}>
+                        Good evening! 👋
+                    </h1>
+                    <p className="text-lg font-600" style={{ color: 'var(--text-secondary)' }}>
+                        Ready to continue your Amharic journey?
+                    </p>
+                </motion.div>
+            </motion.div>
 
-      <header className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div>
-          <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-200/50 dark:bg-zinc-800/50 text-slate-600 dark:text-slate-300 font-bold text-sm mb-4">
-            <Sparkles className="w-4 h-4 text-amharic-yellow" /> Welcome back, Learner!
-          </motion.div>
-          <motion.h1
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-6xl font-extrabold mb-3 tracking-tight"
-          >
-            Ready to <span className="bg-clip-text text-transparent bg-gradient-to-r from-amharic-green to-amharic-yellow">continue?</span>
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.1 }}
-            className="text-lg text-slate-600 dark:text-slate-400"
-          >
-            Let's dive back into your Amharic journey today.
-          </motion.p>
+            <motion.div
+                variants={staggerContainer}
+                initial="hidden"
+                animate="show"
+                className="grid grid-cols-1 lg:grid-cols-3 gap-6"
+            >
+                {/* Left: Main content */}
+                <div className="lg:col-span-2 space-y-6">
+
+                    {/* Stats Row */}
+                    <motion.div variants={fadeUp} className="grid grid-cols-3 gap-4">
+                        {/* Streak */}
+                        <div className="stat-card flex-col items-start gap-2 p-4">
+                            <Flame className="w-7 h-7" style={{ color: 'var(--duo-orange)' }} />
+                            <div>
+                                <div className="text-3xl font-900" style={{ color: 'var(--text-primary)' }}>
+                                    {progress.streak}
+                                </div>
+                                <div className="text-xs font-700 uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
+                                    Day Streak
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* XP */}
+                        <div className="stat-card flex-col items-start gap-2 p-4">
+                            <Zap className="w-7 h-7" style={{ color: 'var(--duo-yellow)' }} />
+                            <div>
+                                <div className="text-3xl font-900" style={{ color: 'var(--text-primary)' }}>
+                                    {progress.totalXP}
+                                </div>
+                                <div className="text-xs font-700 uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
+                                    Total XP
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Level */}
+                        <div className="stat-card flex-col items-start gap-2 p-4">
+                            <Trophy className="w-7 h-7" style={{ color: 'var(--duo-purple)' }} />
+                            <div>
+                                <div className="text-3xl font-900" style={{ color: 'var(--text-primary)' }}>
+                                    {progress.level}
+                                </div>
+                                <div className="text-xs font-700 uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
+                                    Level
+                                </div>
+                            </div>
+                        </div>
+                    </motion.div>
+
+                    {/* Continue Learning CTA */}
+                    <motion.div variants={fadeUp}>
+                        <Card accent="green" className="p-6 md:p-8 relative overflow-hidden">
+                            {/* Decorative pattern */}
+                            <div className="absolute top-0 right-0 opacity-5 text-[140px] font-black leading-none select-none pointer-events-none"
+                                style={{ color: 'var(--duo-green)' }}>
+                                አ
+                            </div>
+
+                            <div className="relative">
+                                <div className="chip chip-green mb-4">
+                                    <GraduationCap className="w-3 h-3" />
+                                    Up Next
+                                </div>
+
+                                <h2 className="text-2xl md:text-3xl font-900 mb-2" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
+                                    {nextLesson?.title || 'Course Complete!'}
+                                </h2>
+                                <p className="font-600 mb-6 max-w-sm" style={{ color: 'var(--text-secondary)' }}>
+                                    {nextLesson?.description || 'You have mastered all lessons. Keep practicing!'}
+                                </p>
+
+                                <div className="flex flex-wrap gap-3 items-center">
+                                    <Link href={nextLesson ? `/practice?lesson=${nextLesson.id}` : '/practice'}>
+                                        <Button size="lg" variant="default" className="gap-2 text-sm">
+                                            {nextLesson ? 'Continue Learning' : 'Practice Now'}
+                                            <ArrowRight className="w-4 h-4" />
+                                        </Button>
+                                    </Link>
+                                    {nextLesson && (
+                                        <div className="xp-badge">
+                                            <Zap className="w-3 h-3" />
+                                            +{nextLesson.xpReward} XP
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </Card>
+                    </motion.div>
+
+                    {/* Quick Practice */}
+                    <motion.div variants={fadeUp}>
+                        <h2 className="text-xl font-900 mb-4" style={{ color: 'var(--text-primary)' }}>
+                            Quick Practice
+                        </h2>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <Link href="/fidel">
+                                <Card interactive className="p-5 group">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-12 h-12 rounded-xl flex items-center justify-center text-xl font-black flex-shrink-0"
+                                            style={{
+                                                backgroundColor: 'rgba(28, 176, 246, 0.12)',
+                                                border: '2px solid rgba(28, 176, 246, 0.2)',
+                                                color: 'var(--duo-blue)',
+                                            }}>
+                                            አ
+                                        </div>
+                                        <div>
+                                            <div className="font-800 text-base" style={{ color: 'var(--text-primary)' }}>
+                                                Alphabet (Fidel)
+                                            </div>
+                                            <div className="text-sm font-600" style={{ color: 'var(--text-secondary)' }}>
+                                                Master Amharic characters
+                                            </div>
+                                        </div>
+                                        <ArrowRight className="w-4 h-4 ml-auto flex-shrink-0 opacity-40 group-hover:opacity-100 group-hover:translate-x-1 transition-all" style={{ color: 'var(--text-secondary)' }} />
+                                    </div>
+                                </Card>
+                            </Link>
+
+                            <Link href="/practice">
+                                <Card interactive className="p-5 group">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
+                                            style={{
+                                                backgroundColor: 'rgba(255, 200, 0, 0.12)',
+                                                border: '2px solid rgba(255, 200, 0, 0.25)',
+                                                color: 'var(--duo-yellow)',
+                                            }}>
+                                            <Library className="w-6 h-6" />
+                                        </div>
+                                        <div>
+                                            <div className="font-800 text-base" style={{ color: 'var(--text-primary)' }}>
+                                                Vocabulary Quiz
+                                            </div>
+                                            <div className="text-sm font-600" style={{ color: 'var(--text-secondary)' }}>
+                                                Test your word knowledge
+                                            </div>
+                                        </div>
+                                        <ArrowRight className="w-4 h-4 ml-auto flex-shrink-0 opacity-40 group-hover:opacity-100 group-hover:translate-x-1 transition-all" style={{ color: 'var(--text-secondary)' }} />
+                                    </div>
+                                </Card>
+                            </Link>
+
+                            <Link href="/lessons">
+                                <Card interactive className="p-5 group sm:col-span-2">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
+                                            style={{
+                                                backgroundColor: 'rgba(206, 130, 255, 0.12)',
+                                                border: '2px solid rgba(206, 130, 255, 0.25)',
+                                                color: 'var(--duo-purple)',
+                                            }}>
+                                            <BookOpen className="w-6 h-6" />
+                                        </div>
+                                        <div>
+                                            <div className="font-800 text-base" style={{ color: 'var(--text-primary)' }}>
+                                                All Lessons
+                                            </div>
+                                            <div className="text-sm font-600" style={{ color: 'var(--text-secondary)' }}>
+                                                View the full learning path — {completedLessonsCount} of {totalLessons} completed
+                                            </div>
+                                        </div>
+                                        <ArrowRight className="w-4 h-4 ml-auto flex-shrink-0 opacity-40 group-hover:opacity-100 group-hover:translate-x-1 transition-all" style={{ color: 'var(--text-secondary)' }} />
+                                    </div>
+                                </Card>
+                            </Link>
+                        </div>
+                    </motion.div>
+                </div>
+
+                {/* Right: Progress sidebar */}
+                <div className="space-y-5">
+                    <motion.div variants={fadeUp}>
+                        <Card className="p-6">
+                            <h3 className="font-900 text-lg mb-5" style={{ color: 'var(--text-primary)' }}>
+                                Course Progress
+                            </h3>
+
+                            {/* Overall Progress */}
+                            <div className="mb-6">
+                                <div className="flex justify-between items-center mb-2">
+                                    <span className="text-sm font-700" style={{ color: 'var(--text-secondary)' }}>
+                                        Lessons
+                                    </span>
+                                    <span className="text-sm font-900" style={{ color: 'var(--duo-green)' }}>
+                                        {progressPercentage}%
+                                    </span>
+                                </div>
+                                <div className="progress-track">
+                                    <motion.div
+                                        className="progress-fill-green"
+                                        initial={{ width: 0 }}
+                                        animate={{ width: `${progressPercentage}%` }}
+                                        transition={{ duration: 0.8, delay: 0.3, type: 'spring', stiffness: 60 }}
+                                    />
+                                </div>
+                                <div className="text-xs font-600 mt-2" style={{ color: 'var(--text-muted)' }}>
+                                    {completedLessonsCount} of {totalLessons} lessons
+                                </div>
+                            </div>
+
+                            {/* Daily Goal */}
+                            <div>
+                                <div className="flex justify-between items-center mb-2">
+                                    <div className="flex items-center gap-1.5">
+                                        <Target className="w-3.5 h-3.5" style={{ color: 'var(--duo-blue)' }} />
+                                        <span className="text-sm font-700" style={{ color: 'var(--text-secondary)' }}>
+                                            Daily Goal
+                                        </span>
+                                    </div>
+                                    <span className="text-sm font-900" style={{ color: 'var(--duo-blue)' }}>
+                                        {currentDailyXP}<span className="font-600 text-xs" style={{ color: 'var(--text-muted)' }}>/{dailyGoalXP} XP</span>
+                                    </span>
+                                </div>
+                                <div className="progress-track">
+                                    <motion.div
+                                        initial={{ width: 0 }}
+                                        animate={{ width: `${dailyProgress}%` }}
+                                        transition={{ duration: 0.8, delay: 0.5, type: 'spring', stiffness: 60 }}
+                                        style={{
+                                            height: '100%',
+                                            backgroundColor: 'var(--duo-blue)',
+                                            borderRadius: '999px',
+                                            position: 'relative',
+                                        }}
+                                    >
+                                        <div style={{
+                                            position: 'absolute',
+                                            top: 3,
+                                            left: 4,
+                                            right: 4,
+                                            height: 4,
+                                            background: 'rgba(255,255,255,0.4)',
+                                            borderRadius: 999,
+                                        }} />
+                                    </motion.div>
+                                </div>
+                            </div>
+                        </Card>
+                    </motion.div>
+
+                    {/* Streak Card */}
+                    <motion.div variants={fadeUp}>
+                        <Card className="p-6 text-center">
+                            <div className="text-5xl mb-2">🔥</div>
+                            <div className="text-4xl font-900 mb-1" style={{ color: 'var(--text-primary)' }}>
+                                {progress.streak}
+                            </div>
+                            <div className="text-sm font-700 uppercase tracking-wider mb-4" style={{ color: 'var(--text-muted)' }}>
+                                Day Streak
+                            </div>
+                            <div className="text-sm font-600 p-3 rounded-xl" style={{ backgroundColor: 'var(--bg-secondary)', color: 'var(--text-secondary)' }}>
+                                {progress.streak === 0
+                                    ? "Start your streak today! 💪"
+                                    : progress.streak < 3
+                                        ? "You're building momentum! ✨"
+                                        : "You're on fire! Keep going! 🌟"}
+                            </div>
+                        </Card>
+                    </motion.div>
+                </div>
+            </motion.div>
         </div>
-      </header>
-
-      {/* Main Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-          <Card className="p-6 flex items-center gap-5 bg-gradient-to-br from-orange-50 to-orange-100/50 dark:from-orange-950/20 dark:to-orange-900/10 border-orange-200/50 dark:border-orange-500/20 hover:-translate-y-1 transition-transform duration-300">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-400 to-orange-600 text-white flex items-center justify-center shadow-lg shadow-orange-500/30">
-              <Flame className="w-8 h-8" />
-            </div>
-            <div>
-              <div className="text-4xl font-black text-orange-600 dark:text-orange-500">{progress.streak}</div>
-              <div className="text-sm font-bold text-orange-900/60 dark:text-orange-200/60 uppercase tracking-widest mt-1">Day Streak</div>
-            </div>
-          </Card>
-        </motion.div>
-
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-          <Card className="p-6 flex items-center gap-5 bg-gradient-to-br from-amharic-yellow/10 to-amharic-yellow/5 dark:from-yellow-950/20 dark:to-yellow-900/10 border-amharic-yellow/30 hover:-translate-y-1 transition-transform duration-300">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-yellow-400 to-amber-500 text-white flex items-center justify-center shadow-lg shadow-amharic-yellow/30">
-              <Star className="w-8 h-8 fill-current" />
-            </div>
-            <div>
-              <div className="text-4xl font-black text-amber-600 dark:text-amharic-yellow">{progress.totalXP}</div>
-              <div className="text-sm font-bold text-amber-900/60 dark:text-amber-200/60 uppercase tracking-widest mt-1">Total XP</div>
-            </div>
-          </Card>
-        </motion.div>
-
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-          <Card className="p-6 flex items-center gap-5 bg-gradient-to-br from-emerald-50 to-emerald-100/50 dark:from-emerald-950/20 dark:to-emerald-900/10 border-amharic-green/30 hover:-translate-y-1 transition-transform duration-300">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-400 to-amharic-green text-white flex items-center justify-center shadow-lg shadow-amharic-green/30">
-              <Award className="w-8 h-8" />
-            </div>
-            <div>
-              <div className="text-4xl font-black text-emerald-700 dark:text-amharic-green-light">Lv. {progress.level}</div>
-              <div className="text-sm font-bold text-emerald-900/60 dark:text-emerald-200/60 uppercase tracking-widest mt-1">Current Rank</div>
-            </div>
-          </Card>
-        </motion.div>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left Column: Learning Path CTA */}
-        <div className="lg:col-span-2 space-y-8">
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.4 }}>
-            <Card className="p-8 border-2 border-amharic-green/50 shadow-2xl shadow-amharic-green/10 relative overflow-hidden group">
-              <div className="absolute top-0 right-0 w-72 h-72 bg-gradient-to-br from-amharic-green/20 to-amharic-yellow/20 rounded-full blur-3xl -translate-y-1/3 translate-x-1/3 group-hover:bg-amharic-green/30 transition-colors duration-500" />
-
-              <div className="relative z-10">
-                <div className="flex items-center gap-2 text-amharic-green font-bold text-sm tracking-widest uppercase mb-4 bg-amharic-green/10 inline-flex px-3 py-1 rounded-full">
-                  <GraduationCap className="w-5 h-5" /> Up Next
-                </div>
-
-                <h2 className="text-4xl font-extrabold mb-3 text-slate-900 dark:text-white">{nextLesson?.title || 'Course Complete!'}</h2>
-                <p className="text-lg text-slate-600 dark:text-slate-400 mb-8 max-w-md">
-                  {nextLesson?.description || 'You have finished all available lessons. Keep practicing to maintain your skills!'}
-                </p>
-
-                <Link href={nextLesson ? `/practice?lesson=${nextLesson.id}` : '/practice'}>
-                  <Button size="lg" className="w-full sm:w-auto gap-3 text-lg py-6 px-8 rounded-xl shadow-lg shadow-amharic-green/20">
-                    {nextLesson ? 'Continue Learning' : 'Practice Now'} <ArrowRight className="w-5 h-5" />
-                  </Button>
-                </Link>
-              </div>
-            </Card>
-          </motion.div>
-
-          {/* Quick Actions */}
-          <div>
-            <h3 className="text-2xl font-bold mb-6 flex items-center gap-2">
-              Quick Practice
-            </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-              <Link href="/fidel">
-                <Card className="p-6 hover:border-amharic-green hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer group glass-card">
-                  <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-zinc-800 flex items-center justify-center mb-5 group-hover:bg-amharic-green/10 transition-colors">
-                    <BookOpen className="w-6 h-6 text-slate-500 group-hover:text-amharic-green transition-colors" />
-                  </div>
-                  <h4 className="font-bold text-xl mb-2 text-slate-900 dark:text-white">Alphabet (Fidel)</h4>
-                  <p className="text-slate-500">Master the Amharic characters</p>
-                </Card>
-              </Link>
-              <Link href="/practice">
-                <Card className="p-6 hover:border-amharic-yellow hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer group glass-card">
-                  <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-zinc-800 flex items-center justify-center mb-5 group-hover:bg-amharic-yellow/10 transition-colors">
-                    <Library className="w-6 h-6 text-slate-500 group-hover:text-amber-500 transition-colors" />
-                  </div>
-                  <h4 className="font-bold text-xl mb-2 text-slate-900 dark:text-white">Vocabulary Quiz</h4>
-                  <p className="text-slate-500">Test your word knowledge</p>
-                </Card>
-              </Link>
-            </div>
-          </div>
-        </div>
-
-        {/* Right Column: Progress details */}
-        <div className="space-y-6">
-          <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5 }}>
-            <Card className="p-8 glass-card border-slate-200/50 dark:border-zinc-800/50">
-              <h3 className="font-bold text-2xl mb-8">Course Progress</h3>
-
-              <div className="mb-8">
-                <div className="mb-3 flex justify-between items-end">
-                  <span className="text-slate-500 font-semibold">Completed</span>
-                  <span className="text-2xl font-black text-amharic-green">{progressPercentage}%</span>
-                </div>
-                <div className="h-4 w-full bg-slate-100 dark:bg-zinc-800 rounded-full overflow-hidden shadow-inner">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${progressPercentage}%` }}
-                    transition={{ duration: 1, delay: 0.5, type: "spring" }}
-                    className="h-full bg-gradient-to-r from-amharic-green-light to-amharic-green rounded-full relative overflow-hidden"
-                  >
-                    <div className="absolute inset-0 bg-white/20 w-full h-full" style={{ transform: 'skewX(-20deg)', animation: 'shimmer 2s infinite' }} />
-                  </motion.div>
-                </div>
-              </div>
-
-              <div>
-                <div className="mb-3 flex justify-between items-end">
-                  <span className="text-slate-500 font-semibold">Daily Goal</span>
-                  <span className="text-2xl font-black text-amber-500">{currentDailyXP}<span className="text-sm text-slate-400">/{dailyGoalXP} XP</span></span>
-                </div>
-                <div className="h-4 w-full bg-slate-100 dark:bg-zinc-800 rounded-full overflow-hidden shadow-inner">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${dailyProgress}%` }}
-                    transition={{ duration: 1, delay: 0.7, type: "spring" }}
-                    className="h-full bg-gradient-to-r from-yellow-400 to-amber-500 rounded-full relative overflow-hidden"
-                  >
-                     <div className="absolute inset-0 bg-white/20 w-full h-full" style={{ transform: 'skewX(-20deg)', animation: 'shimmer 2s infinite' }} />
-                  </motion.div>
-                </div>
-              </div>
-            </Card>
-          </motion.div>
-        </div>
-
-      </div>
-      <style dangerouslySetInnerHTML={{__html: `
-        @keyframes shimmer {
-            0% { transform: translateX(-100%) skewX(-20deg); }
-            100% { transform: translateX(200%) skewX(-20deg); }
-        }
-      `}} />
-    </div>
-  );
+    );
 }

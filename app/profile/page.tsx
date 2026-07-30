@@ -2,19 +2,27 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
+import { motion, Variants } from 'framer-motion';
 import { onAuthStateChanged, signOut, User } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { useAppStore } from '@/lib/store';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { LogOut, User as UserIcon, Flame, Star, Award, Settings, Edit3 } from 'lucide-react';
+import { LogOut, User as UserIcon, Flame, Zap, Trophy, Settings, Award } from 'lucide-react';
+
+const staggerContainer: Variants = {
+    hidden: {},
+    show: { transition: { staggerChildren: 0.08 } },
+};
+const fadeUp: Variants = {
+    hidden: { opacity: 0, y: 16 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.3, ease: 'easeOut' as const } },
+};
 
 export default function ProfilePage() {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
     const router = useRouter();
-
     const { progress, setUid } = useAppStore();
 
     useEffect(() => {
@@ -29,7 +37,6 @@ export default function ProfilePage() {
             }
             setLoading(false);
         });
-
         return () => unsubscribe();
     }, [router, setUid]);
 
@@ -40,119 +47,170 @@ export default function ProfilePage() {
     };
 
     if (loading) {
-        return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="text-center">
+                    <div className="text-4xl mb-3 animate-bounce-in">አ</div>
+                    <div className="font-700" style={{ color: 'var(--text-muted)' }}>Loading...</div>
+                </div>
+            </div>
+        );
     }
 
-    if (!user) return null; // will redirect in useEffect
+    if (!user) return null;
+
+    const xpToNextLevel = 100 - (progress.totalXP % 100);
+    const levelProgress = progress.totalXP % 100;
 
     return (
-        <div className="max-w-6xl mx-auto p-6 md:p-12 relative">
-            {/* Background Blobs */}
-            <div className="absolute top-0 right-0 w-96 h-96 bg-amharic-yellow/10 rounded-full blur-[120px] pointer-events-none -z-10" />
-            <div className="absolute bottom-0 left-0 w-96 h-96 bg-amharic-green/10 rounded-full blur-[120px] pointer-events-none -z-10" />
-
-            <header className="mb-12 text-center md:text-left flex flex-col md:flex-row md:items-end justify-between gap-6">
-                <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
-                    <h1 className="text-4xl md:text-6xl font-extrabold mb-3 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-amharic-green to-amharic-yellow">
+        <div className="max-w-4xl mx-auto p-6 md:p-10">
+            {/* Page header */}
+            <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex items-start justify-between mb-10"
+            >
+                <div>
+                    <div className="chip chip-blue inline-flex mb-3">
+                        <UserIcon className="w-3 h-3" />
+                        Profile
+                    </div>
+                    <h1 className="text-4xl font-black" style={{ color: 'var(--text-primary)', letterSpacing: '-0.03em' }}>
                         Your Profile
                     </h1>
-                    <p className="text-lg text-slate-600 dark:text-slate-400">
-                        Manage your account and track your progress.
-                    </p>
-                </motion.div>
-                <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
-                    <Button variant="outline" onClick={handleLogout} className="gap-2 text-red-500 border-red-200 hover:bg-red-50 hover:text-red-600 dark:border-red-900/30 dark:hover:bg-red-900/20 py-6 px-6 rounded-xl">
-                        <LogOut className="w-5 h-5" /> Sign Out
-                    </Button>
-                </motion.div>
-            </header>
+                </div>
+                <Button
+                    variant="outline"
+                    onClick={handleLogout}
+                    className="gap-2 mt-1"
+                    style={{ color: 'var(--duo-red)', borderColor: 'rgba(255, 75, 75, 0.3)', boxShadow: '0 4px 0 0 rgba(255, 75, 75, 0.2)' }}
+                >
+                    <LogOut className="w-4 h-4" />
+                    Sign Out
+                </Button>
+            </motion.div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {/* User Info Card */}
-                <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.1 }}>
-                    <Card className="p-8 md:col-span-1 flex flex-col items-center text-center glass-card border-slate-200/50 dark:border-zinc-800/50 shadow-2xl shadow-amharic-green/5 relative overflow-hidden">
-                        <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-br from-amharic-green/20 to-amharic-yellow/20 -z-10" />
-                        <div className="w-32 h-32 rounded-full bg-white dark:bg-zinc-900 flex items-center justify-center mb-6 text-slate-400 border-4 border-white dark:border-zinc-800 shadow-xl relative mt-4">
-                            <UserIcon className="w-16 h-16 text-amharic-green" />
-                            <button className="absolute bottom-0 right-0 bg-amharic-yellow text-amber-900 p-2 rounded-full shadow-lg hover:scale-110 transition-transform">
-                                <Edit3 className="w-4 h-4" />
-                            </button>
-                        </div>
-                        <h2 className="text-3xl font-black mb-1 text-slate-900 dark:text-white">{user.displayName || 'Amharic Learner'}</h2>
-                        <p className="text-slate-500 text-base mb-8 font-medium">{user.email}</p>
+            <motion.div
+                variants={staggerContainer}
+                initial="hidden"
+                animate="show"
+                className="grid grid-cols-1 md:grid-cols-3 gap-6"
+            >
+                {/* User card */}
+                <motion.div variants={fadeUp}>
+                    <Card className="p-6 flex flex-col items-center text-center relative overflow-hidden">
+                        {/* Header gradient strip */}
+                        <div className="absolute top-0 inset-x-0 h-20 rounded-t-2xl"
+                            style={{ background: 'linear-gradient(135deg, var(--duo-green), var(--duo-blue))' }} />
 
-                        <div className="w-full space-y-3">
-                            <Button variant="outline" className="w-full justify-start gap-3 py-6 rounded-xl text-lg">
-                                <Settings className="w-5 h-5 text-slate-500" /> Account Settings
-                            </Button>
+                        {/* Avatar */}
+                        <div className="relative z-10 mt-8 mb-4">
+                            <div className="w-20 h-20 rounded-full flex items-center justify-center"
+                                style={{
+                                    backgroundColor: 'var(--bg-primary)',
+                                    border: '3px solid var(--duo-green)',
+                                    boxShadow: '0 4px 0 0 var(--duo-green-border)',
+                                }}>
+                                <UserIcon className="w-10 h-10" style={{ color: 'var(--duo-green)' }} />
+                            </div>
                         </div>
+
+                        <h2 className="font-900 text-xl mb-0.5" style={{ color: 'var(--text-primary)' }}>
+                            {user.displayName || 'Amharic Learner'}
+                        </h2>
+                        <p className="text-sm font-600 mb-5" style={{ color: 'var(--text-muted)' }}>
+                            {user.email}
+                        </p>
+
+                        <Button variant="outline" className="w-full gap-2 text-xs">
+                            <Settings className="w-4 h-4" />
+                            Account Settings
+                        </Button>
                     </Card>
                 </motion.div>
 
-                {/* Stats Cards */}
-                <div className="md:col-span-2 space-y-8">
-                    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-                        <h3 className="text-2xl font-bold flex items-center gap-3 mb-6">
-                            <Award className="w-8 h-8 text-amharic-green" /> Learning Statistics
-                        </h3>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                            <Card className="p-8 flex items-center gap-6 bg-gradient-to-br from-orange-50 to-orange-100/50 dark:from-orange-950/20 dark:to-orange-900/10 border-orange-200/50 dark:border-orange-500/20 hover:-translate-y-1 transition-transform duration-300">
-                                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-400 to-orange-600 text-white flex items-center justify-center shadow-lg shadow-orange-500/30">
-                                    <Flame className="w-8 h-8" />
+                {/* Stats cards */}
+                <div className="md:col-span-2 space-y-4">
+                    <motion.div variants={fadeUp}>
+                        <h2 className="font-900 text-lg mb-4 flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
+                            <Award className="w-5 h-5" style={{ color: 'var(--duo-green)' }} />
+                            Learning Statistics
+                        </h2>
+                        <div className="grid grid-cols-3 gap-3">
+                            <div className="stat-card flex-col items-start gap-2 p-4">
+                                <Flame className="w-6 h-6" style={{ color: 'var(--duo-orange)' }} />
+                                <div className="text-3xl font-900" style={{ color: 'var(--text-primary)' }}>
+                                    {progress.streak}
                                 </div>
-                                <div>
-                                    <div className="text-4xl font-black text-orange-600 dark:text-orange-500">{progress.streak}</div>
-                                    <div className="text-sm font-bold text-orange-900/60 dark:text-orange-200/60 uppercase tracking-widest mt-1">Day Streak</div>
+                                <div className="text-[10px] font-800 uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
+                                    Day Streak
                                 </div>
-                            </Card>
-
-                            <Card className="p-8 flex items-center gap-6 bg-gradient-to-br from-amharic-yellow/10 to-amharic-yellow/5 dark:from-yellow-950/20 dark:to-yellow-900/10 border-amharic-yellow/30 hover:-translate-y-1 transition-transform duration-300">
-                                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-yellow-400 to-amber-500 text-white flex items-center justify-center shadow-lg shadow-amharic-yellow/30">
-                                    <Star className="w-8 h-8 fill-current" />
+                            </div>
+                            <div className="stat-card flex-col items-start gap-2 p-4">
+                                <Zap className="w-6 h-6" style={{ color: 'var(--duo-yellow)' }} />
+                                <div className="text-3xl font-900" style={{ color: 'var(--text-primary)' }}>
+                                    {progress.totalXP}
                                 </div>
-                                <div>
-                                    <div className="text-4xl font-black text-amber-600 dark:text-amharic-yellow">{progress.totalXP}</div>
-                                    <div className="text-sm font-bold text-amber-900/60 dark:text-amber-200/60 uppercase tracking-widest mt-1">Total XP</div>
+                                <div className="text-[10px] font-800 uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
+                                    Total XP
                                 </div>
-                            </Card>
+                            </div>
+                            <div className="stat-card flex-col items-start gap-2 p-4">
+                                <Trophy className="w-6 h-6" style={{ color: 'var(--duo-purple)' }} />
+                                <div className="text-3xl font-900" style={{ color: 'var(--text-primary)' }}>
+                                    {progress.masteredWords.length}
+                                </div>
+                                <div className="text-[10px] font-800 uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
+                                    Words Mastered
+                                </div>
+                            </div>
                         </div>
                     </motion.div>
 
-                    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-                        <Card className="p-8 glass-card border-slate-200/50 dark:border-zinc-800/50 shadow-xl shadow-amharic-green/5">
-                            <h4 className="font-bold text-2xl mb-6 text-slate-900 dark:text-white">Current Level</h4>
-                            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-4">
-                                <div className="flex items-end gap-4">
-                                    <div className="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amharic-green-light to-amharic-green">Lv. {progress.level}</div>
+                    {/* Level card */}
+                    <motion.div variants={fadeUp}>
+                        <Card className="p-6" accent="blue">
+                            <div className="flex items-center justify-between mb-4">
+                                <h3 className="font-900 text-lg" style={{ color: 'var(--text-primary)' }}>
+                                    Current Level
+                                </h3>
+                                <span className="chip chip-blue text-base font-900 px-4 py-1.5">
+                                    Level {progress.level}
+                                </span>
+                            </div>
+
+                            <div className="mb-3">
+                                <div className="flex justify-between text-sm mb-2">
+                                    <span className="font-700" style={{ color: 'var(--text-secondary)' }}>
+                                        XP Progress
+                                    </span>
+                                    <span className="font-900" style={{ color: 'var(--duo-blue)' }}>
+                                        {levelProgress}/100 XP
+                                    </span>
                                 </div>
-                                <div className="text-slate-500 font-medium bg-slate-100 dark:bg-zinc-800 px-4 py-2 rounded-lg">
-                                    Mastered <b className="text-slate-900 dark:text-white text-lg">{progress.masteredWords.length}</b> words
+                                <div className="progress-track">
+                                    <motion.div
+                                        initial={{ width: 0 }}
+                                        animate={{ width: `${levelProgress}%` }}
+                                        transition={{ duration: 0.8, delay: 0.5, type: 'spring', stiffness: 60 }}
+                                        style={{
+                                            height: '100%',
+                                            backgroundColor: 'var(--duo-blue)',
+                                            borderRadius: 999,
+                                            position: 'relative',
+                                        }}
+                                    >
+                                        <div style={{ position: 'absolute', top: 3, left: 4, right: 4, height: 4, background: 'rgba(255,255,255,0.4)', borderRadius: 999 }} />
+                                    </motion.div>
                                 </div>
                             </div>
-                            <div className="h-4 w-full bg-slate-100 dark:bg-zinc-800 rounded-full overflow-hidden mt-6 shadow-inner">
-                                <motion.div
-                                    initial={{ width: 0 }}
-                                    animate={{ width: `${(progress.totalXP % 100)}%` }}
-                                    transition={{ duration: 1, type: "spring" }}
-                                    className="h-full bg-gradient-to-r from-amharic-green-light to-amharic-green rounded-full relative overflow-hidden"
-                                >
-                                    <div className="absolute inset-0 bg-white/20 w-full h-full" style={{ transform: 'skewX(-20deg)', animation: 'shimmer 2s infinite' }} />
-                                </motion.div>
-                            </div>
-                            <div className="text-right text-sm text-slate-400 mt-3 font-semibold">
-                                {100 - (progress.totalXP % 100)} XP to Next Level
-                            </div>
+                            <p className="text-xs font-700" style={{ color: 'var(--text-muted)' }}>
+                                {xpToNextLevel} XP to Level {progress.level + 1}
+                            </p>
                         </Card>
                     </motion.div>
                 </div>
-            </div>
-            <style dangerouslySetInnerHTML={{__html: `
-                @keyframes shimmer {
-                    0% { transform: translateX(-100%) skewX(-20deg); }
-                    100% { transform: translateX(200%) skewX(-20deg); }
-                }
-            `}} />
+            </motion.div>
         </div>
     );
 }

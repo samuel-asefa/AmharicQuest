@@ -3,22 +3,52 @@ import { motion, HTMLMotionProps } from "framer-motion"
 import { cn } from "@/lib/utils"
 
 export interface CardProps extends HTMLMotionProps<"div"> {
-    glass?: boolean;
+    interactive?: boolean;
+    accent?: 'green' | 'blue' | 'yellow' | 'red' | 'none';
 }
 
+const accentStyles: Record<string, React.CSSProperties> = {
+    green: {
+        borderColor: 'var(--duo-green)',
+        boxShadow: '0 4px 0 0 var(--duo-green-border)',
+    },
+    blue: {
+        borderColor: 'var(--duo-blue)',
+        boxShadow: '0 4px 0 0 var(--duo-blue-border)',
+    },
+    yellow: {
+        borderColor: 'var(--duo-yellow)',
+        boxShadow: '0 4px 0 0 var(--duo-yellow-border)',
+    },
+    red: {
+        borderColor: 'var(--duo-red)',
+        boxShadow: '0 4px 0 0 var(--duo-red-border)',
+    },
+    none: {},
+};
+
 const Card = React.forwardRef<HTMLDivElement, CardProps>(
-    ({ className, glass = true, ...props }, ref) => (
+    ({ className, interactive = false, accent = 'none', style, ...props }, ref) => (
         <motion.div
             ref={ref}
             className={cn(
-                "rounded-2xl border bg-card text-card-foreground shadow-sm",
-                glass && "glass-card",
+                "rounded-2xl",
+                interactive && "cursor-pointer",
                 className
             )}
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.3 }}
+            style={{
+                backgroundColor: 'var(--surface)',
+                border: '2px solid var(--border)',
+                boxShadow: '0 4px 0 0 var(--border)',
+                ...accentStyles[accent],
+                ...style,
+            }}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.2, ease: 'easeOut' }}
+            whileHover={interactive ? { y: -2, boxShadow: '0 6px 0 0 var(--border)' } : {}}
+            whileTap={interactive ? { y: 3, boxShadow: '0 1px 0 0 var(--border)' } : {}}
             {...props}
         />
     )

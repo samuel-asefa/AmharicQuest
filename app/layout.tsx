@@ -1,21 +1,18 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Nunito } from "next/font/google";
 import "./globals.css";
 import { ClientLayout } from "@/components/layout/client-layout";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const nunito = Nunito({
+  variable: "--font-nunito",
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800", "900"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
   title: "AmharicQuest - Learn Amharic",
-  description: "An engaging, comprehensive Amharic language learning application.",
+  description: "The fun and effective way to learn Amharic. Master the Fidel script, build vocabulary, and speak with confidence.",
 };
 
 export default function RootLayout({
@@ -25,7 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased selection:bg-amharic-green selection:text-white`}>
+      <body className={`${nunito.variable} antialiased`} style={{ fontFamily: 'var(--font-nunito), Nunito, sans-serif' }}>
         <ClientLayout>
           {children}
         </ClientLayout>
