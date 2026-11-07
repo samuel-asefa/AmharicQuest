@@ -3,54 +3,53 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Home, BookOpen, Library, GraduationCap, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
-
-const navItems = [
-    { href: '/', label: 'Learn', icon: Home },
-    { href: '/fidel', label: 'Fidel', icon: BookOpen },
-    { href: '/lessons', label: 'Lessons', icon: GraduationCap },
-    { href: '/practice', label: 'Practice', icon: Library },
-    { href: '/profile', label: 'Profile', icon: User },
-];
+import { NAV_ITEMS, isActive } from './nav';
 
 export function BottomNav() {
     const pathname = usePathname();
 
     return (
-        <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50"
-            style={{
-                backgroundColor: 'var(--bg-primary)',
-                borderTop: '2px solid var(--border)',
-                paddingBottom: 'env(safe-area-inset-bottom)',
-            }}
+        <nav
+            aria-label="Main"
+            className="glass fixed inset-x-0 bottom-0 z-40 border-t-2 border-line lg:hidden"
+            style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
         >
-            <div className="flex items-center justify-around px-2 pt-1 pb-2">
-                {navItems.map((item) => {
-                    const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
+            <div className="mx-auto flex max-w-lg items-stretch justify-around px-2 py-1.5">
+                {NAV_ITEMS.map((item) => {
+                    const active = isActive(pathname, item.href);
                     return (
                         <Link
                             key={item.href}
                             href={item.href}
-                            className="relative flex flex-col items-center gap-0.5 px-3 py-2 rounded-xl transition-all"
+                            aria-current={active ? 'page' : undefined}
+                            className="relative flex min-w-0 flex-1 flex-col items-center gap-1 rounded-2xl px-1 py-1.5"
                         >
-                            {isActive && (
-                                <motion.div
-                                    layoutId="bottom-nav-pill"
-                                    className="absolute inset-0 rounded-xl"
-                                    style={{ backgroundColor: 'rgba(28, 176, 246, 0.1)', border: '1.5px solid rgba(28, 176, 246, 0.2)' }}
-                                    initial={false}
-                                    transition={{ type: 'spring', stiffness: 400, damping: 35 }}
-                                />
-                            )}
-                            <item.icon
-                                className="w-5 h-5 relative"
-                                style={{ color: isActive ? 'var(--duo-blue)' : 'var(--text-muted)' }}
-                            />
-                            <span
-                                className="text-[10px] font-800 relative"
-                                style={{ color: isActive ? 'var(--duo-blue)' : 'var(--text-muted)' }}
-                            >
+                            <span className="relative grid h-8 w-12 place-items-center">
+                                {active && (
+                                    <motion.span
+                                        layoutId="bottom-nav-active"
+                                        className="absolute inset-0 rounded-full bg-jade-soft"
+                                        transition={{ type: 'spring', stiffness: 500, damping: 36 }}
+                                    />
+                                )}
+                                {item.icon ? (
+                                    <item.icon
+                                        className={cn('relative size-[22px]', active ? 'text-jade-ink' : 'text-ink-3')}
+                                        strokeWidth={active ? 2.6 : 2.2}
+                                    />
+                                ) : (
+                                    <span
+                                        className={cn(
+                                            'font-geez relative text-xl font-bold leading-none',
+                                            active ? 'text-jade-ink' : 'text-ink-3',
+                                        )}
+                                    >
+                                        {item.glyph}
+                                    </span>
+                                )}
+                            </span>
+                            <span className={cn('truncate text-[11px] font-bold', active ? 'text-jade-ink' : 'text-ink-3')}>
                                 {item.label}
                             </span>
                         </Link>

@@ -3,106 +3,105 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Home, BookOpen, Library, GraduationCap, User, Flame, Zap } from 'lucide-react';
+import { ChevronRight, Flame, Zap } from 'lucide-react';
+import { Logo } from '@/components/brand/logo';
+import { Tibeb } from '@/components/brand/tibeb';
+import { ProgressRing } from '@/components/ui/progress';
+import { useAuth } from '@/lib/auth';
+import { useStats } from '@/lib/hooks';
 import { cn } from '@/lib/utils';
-import { useAppStore } from '@/lib/store';
-
-const navItems = [
-    { href: '/', label: 'Learn', icon: Home },
-    { href: '/fidel', label: 'Alphabet', icon: BookOpen },
-    { href: '/lessons', label: 'Lessons', icon: GraduationCap },
-    { href: '/practice', label: 'Practice', icon: Library },
-    { href: '/profile', label: 'Profile', icon: User },
-];
+import { NAV_ITEMS, isActive } from './nav';
+import { UserAvatar } from './user-avatar';
 
 export function Sidebar() {
     const pathname = usePathname();
-    const { progress } = useAppStore();
+    const { streak, today, goal, progress, level } = useStats();
+    const { user } = useAuth();
+    const goalPct = Math.min(1, today / goal);
 
     return (
-        <nav className="hidden md:flex flex-col w-72 h-screen fixed left-0 top-0 z-50"
-            style={{
-                backgroundColor: 'var(--bg-primary)',
-                borderRight: '2px solid var(--border)',
-            }}
-        >
-            {/* Logo */}
-            <div className="px-6 py-8">
-                <Link href="/" className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-2xl flex items-center justify-center text-xl font-black"
-                        style={{ backgroundColor: 'var(--duo-green)', color: 'white', boxShadow: '0 3px 0 0 var(--duo-green-border)' }}>
-                        አ
-                    </div>
-                    <span className="text-2xl font-black" style={{ color: 'var(--text-primary)', letterSpacing: '-0.03em' }}>
-                        AmharicQuest
-                    </span>
-                </Link>
+        <aside className="fixed inset-y-0 left-0 z-40 hidden w-[280px] flex-col border-r-2 border-line bg-surface lg:flex">
+            <Tibeb height={10} />
+            <div className="px-6 pb-7 pt-7">
+                <Logo />
             </div>
 
-            {/* Navigation */}
-            <div className="flex-1 px-4 space-y-1">
-                {navItems.map((item) => {
-                    const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
+            <nav aria-label="Main" className="flex flex-col gap-1 px-4">
+                {NAV_ITEMS.map((item) => {
+                    const active = isActive(pathname, item.href);
                     return (
-                        <Link key={item.href} href={item.href}
-                            className={cn(
-                                'nav-item',
-                                isActive && 'nav-item-active'
-                            )}
-                            style={isActive ? {
-                                color: 'var(--duo-blue)',
-                                backgroundColor: 'rgba(28, 176, 246, 0.08)',
-                                borderColor: 'rgba(28, 176, 246, 0.25)',
-                                boxShadow: '0 2px 0 0 rgba(28, 176, 246, 0.15)',
-                            } : {}}
+                        <Link
+                            key={item.href}
+                            href={item.href}
+                            aria-current={active ? 'page' : undefined}
+                            className="group relative flex items-center gap-3.5 rounded-2xl px-3 py-2.5"
                         >
-                            {isActive && (
-                                <motion.div
-                                    layoutId="sidebar-indicator"
-                                    className="absolute left-0 inset-y-2 w-1 rounded-full"
-                                    style={{ backgroundColor: 'var(--duo-blue)' }}
-                                    initial={false}
-                                    transition={{ type: 'spring', stiffness: 400, damping: 35 }}
+                            {active && (
+                                <motion.span
+                                    layoutId="sidebar-active"
+                                    className="absolute inset-0 rounded-2xl border-2 border-jade/25 bg-jade-soft"
+                                    transition={{ type: 'spring', stiffness: 500, damping: 38 }}
                                 />
                             )}
-                            <item.icon className="w-5 h-5 flex-shrink-0" />
-                            <span>{item.label}</span>
+                            <span
+                                className={cn(
+                                    'relative grid size-10 place-items-center rounded-xl transition-all duration-200',
+                                    active
+                                        ? 'bg-jade text-white shadow-[0_3px_0_0_var(--jade-deep)]'
+                                        : 'bg-paper-2 text-ink-2 group-hover:-rotate-6 group-hover:bg-line group-hover:text-ink',
+                                )}
+                            >
+                                {item.icon ? (
+                                    <item.icon className="size-5" strokeWidth={2.4} />
+                                ) : (
+                                    <span className="font-geez text-lg font-bold leading-none">{item.glyph}</span>
+                                )}
+                            </span>
+                            <span className="relative flex flex-col leading-tight">
+                                <span className={cn('text-[15px] font-bold', active ? 'text-jade-ink' : 'text-ink-2 group-hover:text-ink')}>
+                                    {item.label}
+                                </span>
+                                <span className="font-geez text-xs text-ink-3">{item.am}</span>
+                            </span>
                         </Link>
                     );
                 })}
-            </div>
+            </nav>
 
-            {/* User stats footer */}
-            <div className="p-4 m-4 rounded-2xl"
-                style={{
-                    backgroundColor: 'var(--bg-secondary)',
-                    border: '2px solid var(--border)',
-                    boxShadow: '0 3px 0 0 var(--border)',
-                }}
-            >
-                <div className="flex items-center justify-between mb-3">
-                    <span className="text-xs font-800 uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
-                        Your Stats
-                    </span>
-                </div>
-                <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-1.5">
-                        <Flame className="w-5 h-5" style={{ color: 'var(--duo-orange)' }} />
-                        <span className="font-900 text-base" style={{ color: 'var(--text-primary)' }}>
-                            {progress.streak}
-                        </span>
-                        <span className="text-xs font-700" style={{ color: 'var(--text-muted)' }}>streak</span>
+            <div className="mt-auto space-y-3 p-4">
+                <Link href="/profile" className="tile tile-hover block p-4">
+                    <div className="flex items-center gap-3.5">
+                        <ProgressRing value={goalPct} size={54} stroke={7} accent={goalPct >= 1 ? 'gold' : 'jade'} label="Daily goal">
+                            <Zap className={cn('size-5', goalPct >= 1 ? 'fill-gold text-gold' : 'text-jade-ink')} />
+                        </ProgressRing>
+                        <div className="min-w-0 flex-1">
+                            <div className="eyebrow !text-[0.65rem]">Daily goal</div>
+                            <div className="tabular text-lg font-extrabold leading-tight">
+                                {today}
+                                <span className="text-sm font-bold text-ink-3"> / {goal} XP</span>
+                            </div>
+                        </div>
+                        <div className="flex flex-col items-center" title={`${streak}-day streak`}>
+                            <Flame className={cn('size-6', streak > 0 ? 'animate-flame fill-gold text-berbere' : 'text-ink-3')} />
+                            <span className="tabular text-sm font-extrabold">{streak}</span>
+                        </div>
                     </div>
-                    <div className="w-px h-4" style={{ backgroundColor: 'var(--border)' }} />
-                    <div className="flex items-center gap-1.5">
-                        <Zap className="w-5 h-5" style={{ color: 'var(--duo-yellow)' }} />
-                        <span className="font-900 text-base" style={{ color: 'var(--text-primary)' }}>
-                            {progress.totalXP}
-                        </span>
-                        <span className="text-xs font-700" style={{ color: 'var(--text-muted)' }}>XP</span>
+                </Link>
+
+                <Link
+                    href={user ? '/profile' : '/login'}
+                    className="group flex items-center gap-3 rounded-2xl p-2 transition-colors hover:bg-paper-2"
+                >
+                    <UserAvatar size={40} />
+                    <div className="min-w-0 flex-1 leading-tight">
+                        <div className="truncate text-sm font-bold">{user?.displayName || (user ? 'Learner' : 'Guest learner')}</div>
+                        <div className="truncate text-xs font-semibold text-ink-3">
+                            {user ? `Level ${level.level} · ${progress.totalXP} XP` : 'Sign in to save progress'}
+                        </div>
                     </div>
-                </div>
+                    <ChevronRight className="size-4 text-ink-3 transition-transform group-hover:translate-x-0.5" />
+                </Link>
             </div>
-        </nav>
+        </aside>
     );
 }

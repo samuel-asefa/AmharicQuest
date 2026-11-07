@@ -1,326 +1,478 @@
 'use client';
 
-import { motion, Variants } from 'framer-motion';
 import Link from 'next/link';
-import { useAppStore } from '@/lib/store';
-import { BookOpen, Library, GraduationCap, Flame, Zap, Trophy, ArrowRight, Target, Star } from 'lucide-react';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { mockLessonsData } from '@/lib/data';
+import { motion, type Variants } from 'framer-motion';
+import { ArrowRight, BookOpen, Check, Crown, Flame, Languages, MapPin, Sparkles, Zap } from 'lucide-react';
+import { Tibeb } from '@/components/brand/tibeb';
+import { AnimatedNumber } from '@/components/ui/animated-number';
+import { ButtonLink } from '@/components/ui/button';
+import { ProgressBar, ProgressRing } from '@/components/ui/progress';
+import { useAuth } from '@/lib/auth';
+import { lessonIndex, lessons, nextLessonFor, vocabularyData, wordOfTheDay } from '@/lib/data';
+import { CHAR_ROMAN, FIDEL, FIDEL_COUNT } from '@/lib/fidel';
+import { useIsClient, useStats } from '@/lib/hooks';
+import { cn, currentHour, dayKey, greetingFor, lastDays, weekdayLetter } from '@/lib/utils';
 
-const staggerContainer: Variants = {
-    hidden: {},
-    show: {
-        transition: {
-            staggerChildren: 0.07,
-        },
-    },
+const stagger: Variants = { hidden: {}, show: { transition: { staggerChildren: 0.07, delayChildren: 0.05 } } };
+const rise: Variants = {
+    hidden: { opacity: 0, y: 18 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } },
 };
 
-const fadeUp: Variants = {
-    hidden: { opacity: 0, y: 16 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.3, ease: 'easeOut' as const } },
-};
+export default function HomePage() {
+    return (
+        <motion.div
+            variants={stagger}
+            initial="hidden"
+            animate="show"
+            className="mx-auto max-w-6xl px-4 py-6 sm:px-8 lg:px-10 lg:py-10"
+        >
+            <QuestHero />
+            <StatsRow />
+            <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-5">
+                <WordOfTheDay />
+                <PracticeShortcuts />
+            </div>
+            <FidelShowcase />
+        </motion.div>
+    );
+}
 
-export default function Dashboard() {
-    const { progress } = useAppStore();
+/* ---------------- Hero ---------------- */
 
-    const nextLesson = mockLessonsData.find(l => !progress.completedLessons.includes(l.id)) || mockLessonsData[mockLessonsData.length - 1];
-    const totalLessons = mockLessonsData.length;
-    const completedLessonsCount = progress.completedLessons.length;
-    const progressPercentage = Math.round((completedLessonsCount / totalLessons) * 100) || 0;
-
-    const dailyGoalXP = 50;
-    const currentDailyXP = Math.min(progress.totalXP % dailyGoalXP, dailyGoalXP);
-    const dailyProgress = Math.round((currentDailyXP / dailyGoalXP) * 100);
+function QuestHero() {
+    const { progress } = useStats();
+    const { user } = useAuth();
+    const isClient = useIsClient();
+    const next = nextLessonFor(progress.completedLessons);
+    const stop = next ? lessonIndex(next.id) + 1 : lessons.length;
+    const greeting = isClient ? greetingFor(currentHour()) : { am: 'ሰላም', en: 'Welcome' };
+    const firstName = user?.displayName?.split(' ')[0];
+    const glyph = next?.glyph ?? 'ጎ';
 
     return (
-        <div className="max-w-5xl mx-auto p-6 md:p-10">
-            {/* Page Header */}
-            <motion.div
-                variants={staggerContainer}
-                initial="hidden"
-                animate="show"
-                className="mb-10"
+        <motion.section variants={rise} className="hero-jade relative overflow-hidden rounded-[2rem]">
+            <span
+                aria-hidden
+                className="font-geez pointer-events-none absolute -right-10 -top-16 select-none text-[20rem] font-bold leading-none text-white/[0.06] sm:text-[26rem]"
             >
-                <motion.div variants={fadeUp}>
-                    <div className="inline-flex items-center gap-2 mb-3 chip chip-green">
-                        <Star className="w-3 h-3" />
-                        Keep up your streak!
+                {glyph}
+            </span>
+            <div
+                aria-hidden
+                className="absolute inset-0 opacity-25"
+                style={{
+                    backgroundImage: 'radial-gradient(circle at 1px 1px, rgb(255 255 255 / 0.45) 1px, transparent 0)',
+                    backgroundSize: '22px 22px',
+                    maskImage: 'linear-gradient(100deg, transparent 30%, black 100%)',
+                    WebkitMaskImage: 'linear-gradient(100deg, transparent 30%, black 100%)',
+                }}
+            />
+
+            <div className="relative grid gap-8 p-6 sm:p-10 md:grid-cols-[1fr_auto] md:items-center lg:p-12">
+                <div>
+                    <div className="flex flex-wrap items-center gap-2">
+                        <span className="chip chip-glass">
+                            <MapPin className="size-3.5" />
+                            {next ? `Stop ${stop} of ${lessons.length}` : 'Journey complete'}
+                        </span>
+                        {next && <span className="chip chip-glass font-geez">{next.place.am}</span>}
                     </div>
-                    <h1 className="text-4xl md:text-5xl font-black mb-2" style={{ color: 'var(--text-primary)', letterSpacing: '-0.03em' }}>
-                        Good evening! 👋
-                    </h1>
-                    <p className="text-lg font-600" style={{ color: 'var(--text-secondary)' }}>
-                        Ready to continue your Amharic journey?
+
+                    <p className="mt-6 font-semibold text-white/80">
+                        <span className="font-geez">{greeting.am}</span>
+                        <span className="mx-2 text-white/40">·</span>
+                        {greeting.en}
+                        {firstName ? `, ${firstName}` : ''}
                     </p>
-                </motion.div>
-            </motion.div>
+                    <h1 className="font-display mt-2 text-[2.6rem] font-semibold leading-[1.02] text-white sm:text-6xl">
+                        {next ? (
+                            <>
+                                Next stop:{' '}
+                                <span className="italic text-[#ffd560]">{next.place.en}</span>
+                            </>
+                        ) : (
+                            <>
+                                You crossed <span className="italic text-[#ffd560]">Ethiopia!</span>
+                            </>
+                        )}
+                    </h1>
+                    <p className="mt-4 max-w-md text-lg text-white/80">
+                        {next ? (
+                            <>
+                                <strong className="font-bold text-white">{next.title}.</strong> {next.description}
+                            </>
+                        ) : (
+                            'Every stop on the journey is complete. ጎበዝ! Keep your skills sharp with practice.'
+                        )}
+                    </p>
 
+                    <div className="mt-7 flex flex-wrap items-center gap-3">
+                        <ButtonLink href={next ? `/lessons/${next.id}` : '/practice'} variant="white" size="lg" className="w-full sm:w-auto">
+                            {next ? (progress.completedLessons.length ? 'Continue quest' : 'Start your quest') : 'Practice now'}
+                            <ArrowRight className="size-5" />
+                        </ButtonLink>
+                        <ButtonLink href="/lessons" variant="glass" size="lg" className="w-full sm:w-auto">
+                            View journey
+                        </ButtonLink>
+                    </div>
+
+                    {next && (
+                        <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm font-bold text-white/75">
+                            <span className="inline-flex items-center gap-1.5">
+                                <BookOpen className="size-4" /> {next.items.length} new words
+                            </span>
+                            <span className="inline-flex items-center gap-1.5">
+                                <Zap className="size-4 fill-[#ffd560] text-[#ffd560]" /> +{next.xpReward} XP
+                            </span>
+                        </div>
+                    )}
+                </div>
+
+                <Medallion glyph={glyph} done={!next} />
+            </div>
+
+            <JourneyTrack completed={progress.completedLessons} />
+            <Tibeb height={12} />
+        </motion.section>
+    );
+}
+
+function Medallion({ glyph, done }: { glyph: string; done: boolean }) {
+    return (
+        <div className="relative mx-auto hidden size-56 place-items-center md:grid lg:size-64">
+            <div className="animate-spin-slow absolute inset-0 rounded-full border-2 border-dashed border-white/30">
+                {[0, 72, 144, 216, 288].map((deg, i) => {
+                    const rad = (deg * Math.PI) / 180;
+                    return (
+                        <span
+                            key={deg}
+                            className="absolute size-3 -translate-x-1/2 -translate-y-1/2 rounded-full"
+                            style={{
+                                left: `${50 + 50 * Math.sin(rad)}%`,
+                                top: `${50 - 50 * Math.cos(rad)}%`,
+                                background: ['#ffd560', '#e04a2f', '#fff', '#12c486', '#ffd560'][i],
+                            }}
+                        />
+                    );
+                })}
+            </div>
+            <div className="absolute inset-5 rounded-full bg-white/10 ring-1 ring-white/20 backdrop-blur-sm sm:inset-6" />
             <motion.div
-                variants={staggerContainer}
-                initial="hidden"
-                animate="show"
-                className="grid grid-cols-1 lg:grid-cols-3 gap-6"
+                className="relative grid size-32 place-items-center rounded-full sm:size-40"
+                style={{
+                    background: 'radial-gradient(circle at 32% 26%, #ffe9a6 0%, #f4b000 46%, #c78700 100%)',
+                    boxShadow:
+                        '0 8px 0 0 #8a5d00, 0 24px 50px -12px rgb(0 0 0 / 0.55), inset 0 3px 0 rgb(255 255 255 / 0.55)',
+                }}
+                animate={{ y: [0, -10, 0] }}
+                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
             >
-                {/* Left: Main content */}
-                <div className="lg:col-span-2 space-y-6">
-
-                    {/* Stats Row */}
-                    <motion.div variants={fadeUp} className="grid grid-cols-3 gap-4">
-                        {/* Streak */}
-                        <div className="stat-card flex-col items-start gap-2 p-4">
-                            <Flame className="w-7 h-7" style={{ color: 'var(--duo-orange)' }} />
-                            <div>
-                                <div className="text-3xl font-900" style={{ color: 'var(--text-primary)' }}>
-                                    {progress.streak}
-                                </div>
-                                <div className="text-xs font-700 uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
-                                    Day Streak
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* XP */}
-                        <div className="stat-card flex-col items-start gap-2 p-4">
-                            <Zap className="w-7 h-7" style={{ color: 'var(--duo-yellow)' }} />
-                            <div>
-                                <div className="text-3xl font-900" style={{ color: 'var(--text-primary)' }}>
-                                    {progress.totalXP}
-                                </div>
-                                <div className="text-xs font-700 uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
-                                    Total XP
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Level */}
-                        <div className="stat-card flex-col items-start gap-2 p-4">
-                            <Trophy className="w-7 h-7" style={{ color: 'var(--duo-purple)' }} />
-                            <div>
-                                <div className="text-3xl font-900" style={{ color: 'var(--text-primary)' }}>
-                                    {progress.level}
-                                </div>
-                                <div className="text-xs font-700 uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
-                                    Level
-                                </div>
-                            </div>
-                        </div>
-                    </motion.div>
-
-                    {/* Continue Learning CTA */}
-                    <motion.div variants={fadeUp}>
-                        <Card accent="green" className="p-6 md:p-8 relative overflow-hidden">
-                            {/* Decorative pattern */}
-                            <div className="absolute top-0 right-0 opacity-5 text-[140px] font-black leading-none select-none pointer-events-none"
-                                style={{ color: 'var(--duo-green)' }}>
-                                አ
-                            </div>
-
-                            <div className="relative">
-                                <div className="chip chip-green mb-4">
-                                    <GraduationCap className="w-3 h-3" />
-                                    Up Next
-                                </div>
-
-                                <h2 className="text-2xl md:text-3xl font-900 mb-2" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
-                                    {nextLesson?.title || 'Course Complete!'}
-                                </h2>
-                                <p className="font-600 mb-6 max-w-sm" style={{ color: 'var(--text-secondary)' }}>
-                                    {nextLesson?.description || 'You have mastered all lessons. Keep practicing!'}
-                                </p>
-
-                                <div className="flex flex-wrap gap-3 items-center">
-                                    <Link href={nextLesson ? `/practice?lesson=${nextLesson.id}` : '/practice'}>
-                                        <Button size="lg" variant="default" className="gap-2 text-sm">
-                                            {nextLesson ? 'Continue Learning' : 'Practice Now'}
-                                            <ArrowRight className="w-4 h-4" />
-                                        </Button>
-                                    </Link>
-                                    {nextLesson && (
-                                        <div className="xp-badge">
-                                            <Zap className="w-3 h-3" />
-                                            +{nextLesson.xpReward} XP
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        </Card>
-                    </motion.div>
-
-                    {/* Quick Practice */}
-                    <motion.div variants={fadeUp}>
-                        <h2 className="text-xl font-900 mb-4" style={{ color: 'var(--text-primary)' }}>
-                            Quick Practice
-                        </h2>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <Link href="/fidel">
-                                <Card interactive className="p-5 group">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-12 h-12 rounded-xl flex items-center justify-center text-xl font-black flex-shrink-0"
-                                            style={{
-                                                backgroundColor: 'rgba(28, 176, 246, 0.12)',
-                                                border: '2px solid rgba(28, 176, 246, 0.2)',
-                                                color: 'var(--duo-blue)',
-                                            }}>
-                                            አ
-                                        </div>
-                                        <div>
-                                            <div className="font-800 text-base" style={{ color: 'var(--text-primary)' }}>
-                                                Alphabet (Fidel)
-                                            </div>
-                                            <div className="text-sm font-600" style={{ color: 'var(--text-secondary)' }}>
-                                                Master Amharic characters
-                                            </div>
-                                        </div>
-                                        <ArrowRight className="w-4 h-4 ml-auto flex-shrink-0 opacity-40 group-hover:opacity-100 group-hover:translate-x-1 transition-all" style={{ color: 'var(--text-secondary)' }} />
-                                    </div>
-                                </Card>
-                            </Link>
-
-                            <Link href="/practice">
-                                <Card interactive className="p-5 group">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
-                                            style={{
-                                                backgroundColor: 'rgba(255, 200, 0, 0.12)',
-                                                border: '2px solid rgba(255, 200, 0, 0.25)',
-                                                color: 'var(--duo-yellow)',
-                                            }}>
-                                            <Library className="w-6 h-6" />
-                                        </div>
-                                        <div>
-                                            <div className="font-800 text-base" style={{ color: 'var(--text-primary)' }}>
-                                                Vocabulary Quiz
-                                            </div>
-                                            <div className="text-sm font-600" style={{ color: 'var(--text-secondary)' }}>
-                                                Test your word knowledge
-                                            </div>
-                                        </div>
-                                        <ArrowRight className="w-4 h-4 ml-auto flex-shrink-0 opacity-40 group-hover:opacity-100 group-hover:translate-x-1 transition-all" style={{ color: 'var(--text-secondary)' }} />
-                                    </div>
-                                </Card>
-                            </Link>
-
-                            <Link href="/lessons">
-                                <Card interactive className="p-5 group sm:col-span-2">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
-                                            style={{
-                                                backgroundColor: 'rgba(206, 130, 255, 0.12)',
-                                                border: '2px solid rgba(206, 130, 255, 0.25)',
-                                                color: 'var(--duo-purple)',
-                                            }}>
-                                            <BookOpen className="w-6 h-6" />
-                                        </div>
-                                        <div>
-                                            <div className="font-800 text-base" style={{ color: 'var(--text-primary)' }}>
-                                                All Lessons
-                                            </div>
-                                            <div className="text-sm font-600" style={{ color: 'var(--text-secondary)' }}>
-                                                View the full learning path — {completedLessonsCount} of {totalLessons} completed
-                                            </div>
-                                        </div>
-                                        <ArrowRight className="w-4 h-4 ml-auto flex-shrink-0 opacity-40 group-hover:opacity-100 group-hover:translate-x-1 transition-all" style={{ color: 'var(--text-secondary)' }} />
-                                    </div>
-                                </Card>
-                            </Link>
-                        </div>
-                    </motion.div>
-                </div>
-
-                {/* Right: Progress sidebar */}
-                <div className="space-y-5">
-                    <motion.div variants={fadeUp}>
-                        <Card className="p-6">
-                            <h3 className="font-900 text-lg mb-5" style={{ color: 'var(--text-primary)' }}>
-                                Course Progress
-                            </h3>
-
-                            {/* Overall Progress */}
-                            <div className="mb-6">
-                                <div className="flex justify-between items-center mb-2">
-                                    <span className="text-sm font-700" style={{ color: 'var(--text-secondary)' }}>
-                                        Lessons
-                                    </span>
-                                    <span className="text-sm font-900" style={{ color: 'var(--duo-green)' }}>
-                                        {progressPercentage}%
-                                    </span>
-                                </div>
-                                <div className="progress-track">
-                                    <motion.div
-                                        className="progress-fill-green"
-                                        initial={{ width: 0 }}
-                                        animate={{ width: `${progressPercentage}%` }}
-                                        transition={{ duration: 0.8, delay: 0.3, type: 'spring', stiffness: 60 }}
-                                    />
-                                </div>
-                                <div className="text-xs font-600 mt-2" style={{ color: 'var(--text-muted)' }}>
-                                    {completedLessonsCount} of {totalLessons} lessons
-                                </div>
-                            </div>
-
-                            {/* Daily Goal */}
-                            <div>
-                                <div className="flex justify-between items-center mb-2">
-                                    <div className="flex items-center gap-1.5">
-                                        <Target className="w-3.5 h-3.5" style={{ color: 'var(--duo-blue)' }} />
-                                        <span className="text-sm font-700" style={{ color: 'var(--text-secondary)' }}>
-                                            Daily Goal
-                                        </span>
-                                    </div>
-                                    <span className="text-sm font-900" style={{ color: 'var(--duo-blue)' }}>
-                                        {currentDailyXP}<span className="font-600 text-xs" style={{ color: 'var(--text-muted)' }}>/{dailyGoalXP} XP</span>
-                                    </span>
-                                </div>
-                                <div className="progress-track">
-                                    <motion.div
-                                        initial={{ width: 0 }}
-                                        animate={{ width: `${dailyProgress}%` }}
-                                        transition={{ duration: 0.8, delay: 0.5, type: 'spring', stiffness: 60 }}
-                                        style={{
-                                            height: '100%',
-                                            backgroundColor: 'var(--duo-blue)',
-                                            borderRadius: '999px',
-                                            position: 'relative',
-                                        }}
-                                    >
-                                        <div style={{
-                                            position: 'absolute',
-                                            top: 3,
-                                            left: 4,
-                                            right: 4,
-                                            height: 4,
-                                            background: 'rgba(255,255,255,0.4)',
-                                            borderRadius: 999,
-                                        }} />
-                                    </motion.div>
-                                </div>
-                            </div>
-                        </Card>
-                    </motion.div>
-
-                    {/* Streak Card */}
-                    <motion.div variants={fadeUp}>
-                        <Card className="p-6 text-center">
-                            <div className="text-5xl mb-2">🔥</div>
-                            <div className="text-4xl font-900 mb-1" style={{ color: 'var(--text-primary)' }}>
-                                {progress.streak}
-                            </div>
-                            <div className="text-sm font-700 uppercase tracking-wider mb-4" style={{ color: 'var(--text-muted)' }}>
-                                Day Streak
-                            </div>
-                            <div className="text-sm font-600 p-3 rounded-xl" style={{ backgroundColor: 'var(--bg-secondary)', color: 'var(--text-secondary)' }}>
-                                {progress.streak === 0
-                                    ? "Start your streak today! 💪"
-                                    : progress.streak < 3
-                                        ? "You're building momentum! ✨"
-                                        : "You're on fire! Keep going! 🌟"}
-                            </div>
-                        </Card>
-                    </motion.div>
-                </div>
+                <span className="absolute inset-2.5 rounded-full border-2 border-[#8a5d00]/30" />
+                {done ? (
+                    <Crown className="size-16 text-on-gold" strokeWidth={2.2} />
+                ) : (
+                    <span className="font-geez text-7xl font-bold leading-none text-on-gold sm:text-8xl">{glyph}</span>
+                )}
             </motion.div>
         </div>
+    );
+}
+
+function JourneyTrack({ completed }: { completed: string[] }) {
+    return (
+        <div className="relative flex items-center gap-1.5 px-6 pb-6 sm:px-10 lg:px-12" aria-label="Journey progress">
+            {lessons.map((l, i) => {
+                const done = completed.includes(l.id);
+                return (
+                    <motion.span
+                        key={l.id}
+                        title={`${l.place.en} — ${l.title}`}
+                        initial={{ scaleX: 0 }}
+                        animate={{ scaleX: 1 }}
+                        transition={{ delay: 0.3 + i * 0.04, duration: 0.4 }}
+                        className={cn(
+                            'h-2 flex-1 origin-left rounded-full',
+                            done ? 'bg-[#ffd560] shadow-[0_0_12px_rgb(255_213_96/0.6)]' : 'bg-white/20',
+                        )}
+                    />
+                );
+            })}
+        </div>
+    );
+}
+
+/* ---------------- Stats ---------------- */
+
+function StatsRow() {
+    const { progress, streak, today, goal, level } = useStats();
+    const week = lastDays(7);
+    const goalPct = Math.min(1, today / goal);
+    const vocab = vocabularyData.length;
+
+    return (
+        <motion.section variants={rise} className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
+            <Link href="/profile#settings" className="tile tile-hover flex items-center gap-4 p-4 sm:p-5">
+                <ProgressRing value={goalPct} size={64} stroke={8} accent={goalPct >= 1 ? 'gold' : 'jade'} label="Daily goal">
+                    {goalPct >= 1 ? (
+                        <Check className="size-6 text-gold-ink" strokeWidth={3} />
+                    ) : (
+                        <span className="tabular text-sm font-extrabold">{Math.round(goalPct * 100)}%</span>
+                    )}
+                </ProgressRing>
+                <div className="min-w-0">
+                    <div className="eyebrow !text-[0.65rem]">Daily goal</div>
+                    <div className="tabular text-xl font-extrabold">
+                        {today}
+                        <span className="text-sm font-bold text-ink-3">/{goal}</span>
+                    </div>
+                    <div className="truncate text-xs font-semibold text-ink-3">
+                        {goalPct >= 1 ? 'Goal reached! ጎበዝ!' : `${goal - today} XP to go`}
+                    </div>
+                </div>
+            </Link>
+
+            <div className="tile p-4 sm:p-5">
+                <div className="flex items-center justify-between">
+                    <div>
+                        <div className="eyebrow !text-[0.65rem]">Streak</div>
+                        <div className="tabular flex items-baseline gap-1 text-xl font-extrabold">
+                            <AnimatedNumber value={streak} />
+                            <span className="text-sm font-bold text-ink-3">{streak === 1 ? 'day' : 'days'}</span>
+                        </div>
+                    </div>
+                    <Flame className={cn('size-9', streak > 0 ? 'animate-flame fill-gold text-berbere' : 'text-line-strong')} />
+                </div>
+                <div className="mt-3 flex justify-between gap-0.5">
+                    {week.map((d) => {
+                        const active = (progress.xpHistory[d] ?? 0) > 0;
+                        const isToday = d === dayKey();
+                        return (
+                            <div key={d} className="flex flex-col items-center gap-1">
+                                <span
+                                    className={cn(
+                                        'grid size-4 place-items-center rounded-full min-[400px]:size-5 sm:size-6',
+                                        active ? 'bg-berbere text-white' : 'bg-paper-2',
+                                        isToday && !active && 'ring-2 ring-berbere/40',
+                                    )}
+                                >
+                                    {active && <Check className="size-2.5 sm:size-3" strokeWidth={4} />}
+                                </span>
+                                <span className={cn('text-[10px] font-bold', isToday ? 'text-berbere-ink' : 'text-ink-3')}>
+                                    {weekdayLetter(d)}
+                                </span>
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
+
+            <div className="tile p-4 sm:p-5">
+                <div className="flex items-center justify-between">
+                    <div>
+                        <div className="eyebrow !text-[0.65rem]">Level {level.level}</div>
+                        <div className="tabular flex items-baseline gap-1 text-xl font-extrabold">
+                            <AnimatedNumber value={progress.totalXP} />
+                            <span className="text-sm font-bold text-ink-3">XP</span>
+                        </div>
+                    </div>
+                    <span className="grid size-10 place-items-center rounded-xl bg-gold-soft">
+                        <Zap className="size-5 fill-gold text-gold-deep" />
+                    </span>
+                </div>
+                <ProgressBar value={level.pct} accent="gold" height={10} className="mt-4" label="Level progress" />
+                <div className="mt-2 truncate text-xs font-semibold text-ink-3">
+                    {level.title} · {level.toNext} XP to level {level.level + 1}
+                </div>
+            </div>
+
+            <div className="tile p-4 sm:p-5">
+                <div className="flex items-center justify-between">
+                    <div>
+                        <div className="eyebrow !text-[0.65rem]">Words</div>
+                        <div className="tabular flex items-baseline gap-1 text-xl font-extrabold">
+                            <AnimatedNumber value={progress.masteredWords.length} />
+                            <span className="text-sm font-bold text-ink-3">/ {vocab}</span>
+                        </div>
+                    </div>
+                    <span className="grid size-10 place-items-center rounded-xl bg-lapis-soft">
+                        <BookOpen className="size-5 text-lapis-ink" />
+                    </span>
+                </div>
+                <ProgressBar value={progress.masteredWords.length / vocab} accent="lapis" height={10} className="mt-4" label="Words learned" />
+                <div className="mt-2 truncate text-xs font-semibold text-ink-3">
+                    {progress.completedLessons.length} of {lessons.length} lessons done
+                </div>
+            </div>
+        </motion.section>
+    );
+}
+
+/* ---------------- Word of the day ---------------- */
+
+function WordOfTheDay() {
+    const isClient = useIsClient();
+    const word = isClient ? wordOfTheDay(dayKey()) : null;
+    const chars = word ? Array.from(word.amharic).filter((c) => c.trim() && c !== '?') : [];
+
+    return (
+        <motion.section variants={rise} className="tile min-w-0 overflow-hidden lg:col-span-3">
+            <Tibeb height={8} />
+            <div className="relative p-6 sm:p-8">
+                <div className="flex items-center justify-between gap-3">
+                    <div className="eyebrow">
+                        <Sparkles className="size-3.5 text-gold" />
+                        Word of the day
+                        <span className="font-geez normal-case tracking-normal">· የዕለቱ ቃል</span>
+                    </div>
+                    {word && <span className="chip chip-gold">{word.category}</span>}
+                </div>
+
+                {word ? (
+                    <motion.div key={word.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-5">
+                        <div className="font-geez text-6xl font-bold leading-tight sm:text-7xl">{word.amharic}</div>
+                        <div className="mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                            <span className="font-display text-2xl font-medium italic text-ink-2">{word.phonetic}</span>
+                            <span className="text-ink-3">—</span>
+                            <span className="font-display text-2xl font-semibold">{word.english}</span>
+                        </div>
+
+                        <div className="mt-6 flex flex-wrap gap-2">
+                            {chars.map((c, i) => (
+                                <motion.div
+                                    key={`${c}-${i}`}
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.2 + i * 0.06 }}
+                                    className="flex min-w-14 flex-col items-center rounded-2xl border-2 border-line bg-surface-2 px-3 py-2"
+                                >
+                                    <span className="font-geez text-2xl font-bold leading-tight">{c}</span>
+                                    <span className="text-xs font-bold text-jade-ink">{CHAR_ROMAN[c] ?? '·'}</span>
+                                </motion.div>
+                            ))}
+                        </div>
+                        <p className="mt-3 text-sm text-ink-3">Each Fidel character is one syllable — read it one tile at a time.</p>
+                    </motion.div>
+                ) : (
+                    <div className="mt-5 h-48 animate-pulse rounded-2xl bg-paper-2" />
+                )}
+            </div>
+        </motion.section>
+    );
+}
+
+/* ---------------- Practice shortcuts ---------------- */
+
+const shortcuts = [
+    {
+        href: '/practice?mode=meaning',
+        title: 'Vocabulary sprint',
+        text: 'Quick-fire word quizzes with combos',
+        accent: 'lapis',
+        icon: Languages,
+    },
+    {
+        href: '/practice?mode=fidel',
+        title: 'Fidel drill',
+        text: 'Read characters by sound',
+        accent: 'gold',
+        glyph: 'ሀ',
+    },
+    {
+        href: '/practice?mode=sprint',
+        title: 'Speed round',
+        text: '60 seconds. How far can you go?',
+        accent: 'berbere',
+        icon: Zap,
+    },
+] as const;
+
+function PracticeShortcuts() {
+    return (
+        <motion.section variants={rise} className="flex min-w-0 flex-col gap-4 lg:col-span-2">
+            <div className="flex items-center justify-between px-1">
+                <h2 className="font-display text-2xl font-semibold">Practice</h2>
+                <Link href="/practice" className="text-sm font-bold text-jade-ink hover:underline">
+                    See all
+                </Link>
+            </div>
+            {shortcuts.map((s) => (
+                <Link key={s.href} href={s.href} className="tile tile-hover group flex items-center gap-4 p-4">
+                    <span
+                        className="grid size-14 shrink-0 place-items-center rounded-2xl text-white transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-105"
+                        style={{ background: `var(--${s.accent})`, boxShadow: `0 4px 0 0 var(--${s.accent}-deep)` }}
+                    >
+                        {'icon' in s ? (
+                            <s.icon className="size-6" strokeWidth={2.4} />
+                        ) : (
+                            <span className="font-geez text-3xl font-bold leading-none">{s.glyph}</span>
+                        )}
+                    </span>
+                    <span className="min-w-0 flex-1">
+                        <span className="block font-bold">{s.title}</span>
+                        <span className="block truncate text-sm text-ink-3">{s.text}</span>
+                    </span>
+                    <ArrowRight className="size-5 text-ink-3 transition-transform group-hover:translate-x-1 group-hover:text-ink" />
+                </Link>
+            ))}
+        </motion.section>
+    );
+}
+
+/* ---------------- Fidel showcase ---------------- */
+
+const rowA = FIDEL.slice(0, 17).flatMap((f) => f.forms.map((x) => x.char));
+const rowB = FIDEL.slice(17).flatMap((f) => f.forms.map((x) => x.char));
+
+function GlyphRow({ chars, reverse }: { chars: string[]; reverse?: boolean }) {
+    return (
+        <div className="mask-fade-x overflow-hidden">
+            <div
+                className={cn(
+                    'flex w-max gap-3 hover:[animation-play-state:paused]',
+                    reverse ? 'animate-marquee-reverse' : 'animate-marquee',
+                )}
+            >
+                {[...chars, ...chars].map((c, i) => (
+                    <span
+                        key={i}
+                        aria-hidden={i >= chars.length}
+                        className="font-geez grid size-16 shrink-0 place-items-center rounded-2xl bg-white/[0.07] text-3xl font-bold text-white ring-1 ring-white/12 transition-all duration-200 hover:scale-110 hover:bg-[#f4b000] hover:text-[#3f2b00]"
+                    >
+                        {c}
+                    </span>
+                ))}
+            </div>
+        </div>
+    );
+}
+
+function FidelShowcase() {
+    return (
+        <motion.section variants={rise} className="hero-ink relative mt-6 overflow-hidden rounded-[2rem]">
+            <div className="grid grid-cols-1 items-center gap-8 py-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)] lg:py-12">
+                <div className="px-6 sm:px-10">
+                    <div className="eyebrow !text-white/60">
+                        <span className="h-[2px] w-6 rounded-full bg-gold" />
+                        The Fidel <span className="font-geez normal-case tracking-normal">· ፊደል</span>
+                    </div>
+                    <h2 className="font-display mt-3 text-4xl font-semibold leading-[1.05] text-white xl:text-[2.75rem]">
+                        {FIDEL_COUNT} characters.
+                        <br />
+                        <span className="italic text-[#ffd560]">One</span> beautiful script.
+                    </h2>
+                    <p className="mt-4 max-w-sm text-white/70">
+                        Learn {FIDEL.length} shapes and 7 vowel patterns, and you can sound out any Amharic word.
+                    </p>
+                    <ButtonLink href="/fidel" variant="gold" size="lg" className="mt-6">
+                        Explore the Fidel <ArrowRight className="size-5" />
+                    </ButtonLink>
+                </div>
+                <div className="space-y-3">
+                    <GlyphRow chars={rowA} />
+                    <GlyphRow chars={rowB} reverse />
+                </div>
+            </div>
+        </motion.section>
     );
 }

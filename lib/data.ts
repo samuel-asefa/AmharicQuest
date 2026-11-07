@@ -1,54 +1,27 @@
-import { VocabularyItem } from "./types";
-
-export const fidelData = [
-    { basePhonetic: 'h', family: [{ char: 'ሀ', phonetic: 'ha' }, { char: 'ሁ', phonetic: 'hu' }, { char: 'ሂ', phonetic: 'hi' }, { char: 'ሃ', phonetic: 'ha*' }, { char: 'ሄ', phonetic: 'he' }, { char: 'ህ', phonetic: 'h' }, { char: 'ሆ', phonetic: 'ho' }] },
-    { basePhonetic: 'l', family: [{ char: 'ለ', phonetic: 'le' }, { char: 'ሉ', phonetic: 'lu' }, { char: 'ሊ', phonetic: 'li' }, { char: 'ላ', phonetic: 'la' }, { char: 'ሌ', phonetic: 'le*' }, { char: 'ል', phonetic: 'l' }, { char: 'ሎ', phonetic: 'lo' }] },
-    { basePhonetic: 'h', family: [{ char: 'ሐ', phonetic: 'ha' }, { char: 'ሑ', phonetic: 'hu' }, { char: 'ሒ', phonetic: 'hi' }, { char: 'ሓ', phonetic: 'ha*' }, { char: 'ሔ', phonetic: 'he' }, { char: 'ሕ', phonetic: 'h' }, { char: 'ሖ', phonetic: 'ho' }] },
-    { basePhonetic: 'm', family: [{ char: 'መ', phonetic: 'me' }, { char: 'ሙ', phonetic: 'mu' }, { char: 'ሚ', phonetic: 'mi' }, { char: 'ማ', phonetic: 'ma' }, { char: 'ሜ', phonetic: 'me*' }, { char: 'ም', phonetic: 'm' }, { char: 'ሞ', phonetic: 'mo' }] },
-    { basePhonetic: 's', family: [{ char: 'ሠ', phonetic: 'se' }, { char: 'ሡ', phonetic: 'su' }, { char: 'ሢ', phonetic: 'si' }, { char: 'ሣ', phonetic: 'sa' }, { char: 'ሤ', phonetic: 'se*' }, { char: 'ሥ', phonetic: 's' }, { char: 'ሦ', phonetic: 'so' }] },
-    { basePhonetic: 'r', family: [{ char: 'ረ', phonetic: 're' }, { char: 'ሩ', phonetic: 'ru' }, { char: 'ሪ', phonetic: 'ri' }, { char: 'ራ', phonetic: 'ra' }, { char: 'ሬ', phonetic: 're*' }, { char: 'ር', phonetic: 'r' }, { char: 'ሮ', phonetic: 'ro' }] },
-    { basePhonetic: 's', family: [{ char: 'ሰ', phonetic: 'se' }, { char: 'ሱ', phonetic: 'su' }, { char: 'ሲ', phonetic: 'si' }, { char: 'ሳ', phonetic: 'sa' }, { char: 'ሴ', phonetic: 'se*' }, { char: 'ስ', phonetic: 's' }, { char: 'ሶ', phonetic: 'so' }] },
-    { basePhonetic: 'sh', family: [{ char: 'ሸ', phonetic: 'she' }, { char: 'ሹ', phonetic: 'shu' }, { char: 'ሺ', phonetic: 'shi' }, { char: 'ሻ', phonetic: 'sha' }, { char: 'ሼ', phonetic: 'she*' }, { char: 'ሽ', phonetic: 'sh' }, { char: 'ሾ', phonetic: 'sho' }] },
-    { basePhonetic: 'q', family: [{ char: 'ቀ', phonetic: 'qe' }, { char: 'ቁ', phonetic: 'qu' }, { char: 'ቂ', phonetic: 'qi' }, { char: 'ቃ', phonetic: 'qa' }, { char: 'ቄ', phonetic: 'qe*' }, { char: 'ቅ', phonetic: 'q' }, { char: 'ቆ', phonetic: 'qo' }] },
-    { basePhonetic: 'b', family: [{ char: 'በ', phonetic: 'be' }, { char: 'ቡ', phonetic: 'bu' }, { char: 'ቢ', phonetic: 'bi' }, { char: 'ባ', phonetic: 'ba' }, { char: 'ቤ', phonetic: 'be*' }, { char: 'ብ', phonetic: 'b' }, { char: 'ቦ', phonetic: 'bo' }] },
-    { basePhonetic: 'v', family: [{ char: 'ቨ', phonetic: 've' }, { char: 'ቩ', phonetic: 'vu' }, { char: 'ቪ', phonetic: 'vi' }, { char: 'ቫ', phonetic: 'va' }, { char: 'ቬ', phonetic: 've*' }, { char: 'ቭ', phonetic: 'v' }, { char: 'ቮ', phonetic: 'vo' }] },
-    { basePhonetic: 't', family: [{ char: 'ተ', phonetic: 'te' }, { char: 'ቱ', phonetic: 'tu' }, { char: 'ቲ', phonetic: 'ti' }, { char: 'ታ', phonetic: 'ta' }, { char: 'ቴ', phonetic: 'te*' }, { char: 'ት', phonetic: 't' }, { char: 'ቶ', phonetic: 'to' }] },
-    { basePhonetic: 'ch', family: [{ char: 'ቸ', phonetic: 'che' }, { char: 'ቹ', phonetic: 'chu' }, { char: 'ቺ', phonetic: 'chi' }, { char: 'ቻ', phonetic: 'cha' }, { char: 'ቼ', phonetic: 'che*' }, { char: 'ች', phonetic: 'ch' }, { char: 'ቾ', phonetic: 'cho' }] },
-    { basePhonetic: 'h', family: [{ char: 'ኀ', phonetic: 'ha' }, { char: 'ኁ', phonetic: 'hu' }, { char: 'ኂ', phonetic: 'hi' }, { char: 'ኃ', phonetic: 'ha*' }, { char: 'ኄ', phonetic: 'he' }, { char: 'ኅ', phonetic: 'h' }, { char: 'ኆ', phonetic: 'ho' }] },
-    { basePhonetic: 'n', family: [{ char: 'ነ', phonetic: 'ne' }, { char: 'ኑ', phonetic: 'nu' }, { char: 'ኒ', phonetic: 'ni' }, { char: 'ና', phonetic: 'na' }, { char: 'ኔ', phonetic: 'ne*' }, { char: 'ን', phonetic: 'n' }, { char: 'ኖ', phonetic: 'no' }] },
-    { basePhonetic: 'ny', family: [{ char: 'ኘ', phonetic: 'nye' }, { char: 'ኙ', phonetic: 'nyu' }, { char: 'ኚ', phonetic: 'nyi' }, { char: 'ኛ', phonetic: 'nya' }, { char: 'ኜ', phonetic: 'nye*' }, { char: 'ኝ', phonetic: 'ny' }, { char: 'ኞ', phonetic: 'nyo' }] },
-    { basePhonetic: 'a', family: [{ char: 'አ', phonetic: 'a' }, { char: 'ኡ', phonetic: 'u' }, { char: 'ኢ', phonetic: 'i' }, { char: 'ኣ', phonetic: 'a*' }, { char: 'ኤ', phonetic: 'e' }, { char: 'እ', phonetic: 'e/null' }, { char: 'ኦ', phonetic: 'o' }] },
-    { basePhonetic: 'k', family: [{ char: 'ከ', phonetic: 'ke' }, { char: 'ኩ', phonetic: 'ku' }, { char: 'ኪ', phonetic: 'ki' }, { char: 'ካ', phonetic: 'ka' }, { char: 'ኬ', phonetic: 'ke*' }, { char: 'ክ', phonetic: 'k' }, { char: 'ኮ', phonetic: 'ko' }] },
-    { basePhonetic: 'h/x', family: [{ char: 'ኸ', phonetic: 'he' }, { char: 'ኹ', phonetic: 'hu' }, { char: 'ኺ', phonetic: 'hi' }, { char: 'ኻ', phonetic: 'ha' }, { char: 'ኼ', phonetic: 'he*' }, { char: 'ኽ', phonetic: 'h' }, { char: 'ኾ', phonetic: 'ho' }] },
-    { basePhonetic: 'w', family: [{ char: 'ወ', phonetic: 'we' }, { char: 'ዉ', phonetic: 'wu' }, { char: 'ዊ', phonetic: 'wi' }, { char: 'ዋ', phonetic: 'wa' }, { char: 'ዌ', phonetic: 'we*' }, { char: 'ው', phonetic: 'w' }, { char: 'ዎ', phonetic: 'wo' }] },
-    { basePhonetic: 'a', family: [{ char: 'ዐ', phonetic: 'a' }, { char: 'ዑ', phonetic: 'u' }, { char: 'ዒ', phonetic: 'i' }, { char: 'ዓ', phonetic: 'a*' }, { char: 'ዔ', phonetic: 'e' }, { char: 'ዕ', phonetic: 'e/null' }, { char: 'ዖ', phonetic: 'o' }] },
-    { basePhonetic: 'z', family: [{ char: 'ዘ', phonetic: 'ze' }, { char: 'ዙ', phonetic: 'zu' }, { char: 'ዚ', phonetic: 'zi' }, { char: 'ዛ', phonetic: 'za' }, { char: 'ዜ', phonetic: 'ze*' }, { char: 'ዝ', phonetic: 'z' }, { char: 'ዞ', phonetic: 'zo' }] },
-    { basePhonetic: 'zh', family: [{ char: 'ዠ', phonetic: 'zhe' }, { char: 'ዡ', phonetic: 'zhu' }, { char: 'ዢ', phonetic: 'zhi' }, { char: 'ዣ', phonetic: 'zha' }, { char: 'ዤ', phonetic: 'zhe*' }, { char: 'ዥ', phonetic: 'zh' }, { char: 'ዦ', phonetic: 'zho' }] },
-    { basePhonetic: 'y', family: [{ char: 'የ', phonetic: 'ye' }, { char: 'ዩ', phonetic: 'yu' }, { char: 'ዪ', phonetic: 'yi' }, { char: 'ያ', phonetic: 'ya' }, { char: 'ዬ', phonetic: 'ye*' }, { char: 'ይ', phonetic: 'y' }, { char: 'ዮ', phonetic: 'yo' }] },
-    { basePhonetic: 'd', family: [{ char: 'ደ', phonetic: 'de' }, { char: 'ዱ', phonetic: 'du' }, { char: 'ዲ', phonetic: 'di' }, { char: 'ዳ', phonetic: 'da' }, { char: 'ዴ', phonetic: 'de*' }, { char: 'ድ', phonetic: 'd' }, { char: 'ዶ', phonetic: 'do' }] },
-    { basePhonetic: 'j', family: [{ char: 'ጀ', phonetic: 'je' }, { char: 'ጁ', phonetic: 'ju' }, { char: 'ጂ', phonetic: 'ji' }, { char: 'ጃ', phonetic: 'ja' }, { char: 'ጄ', phonetic: 'je*' }, { char: 'ጅ', phonetic: 'j' }, { char: 'ጆ', phonetic: 'jo' }] },
-    { basePhonetic: 'g', family: [{ char: 'ገ', phonetic: 'ge' }, { char: 'ጉ', phonetic: 'gu' }, { char: 'ጊ', phonetic: 'gi' }, { char: 'ጋ', phonetic: 'ga' }, { char: 'ጌ', phonetic: 'ge*' }, { char: 'ግ', phonetic: 'g' }, { char: 'ጎ', phonetic: 'go' }] },
-    { basePhonetic: 'T', family: [{ char: 'ጠ', phonetic: 'T\'e' }, { char: 'ጡ', phonetic: 'T\'u' }, { char: 'ጢ', phonetic: 'T\'i' }, { char: 'ጣ', phonetic: 'T\'a' }, { char: 'ጤ', phonetic: 'T\'e*' }, { char: 'ጥ', phonetic: 'T\'' }, { char: 'ጦ', phonetic: 'T\'o' }] },
-    { basePhonetic: 'CH', family: [{ char: 'ጨ', phonetic: 'CH\'e' }, { char: 'ጩ', phonetic: 'CH\'u' }, { char: 'ጪ', phonetic: 'CH\'i' }, { char: 'ጫ', phonetic: 'CH\'a' }, { char: 'ጬ', phonetic: 'CH\'e*' }, { char: 'ጭ', phonetic: 'CH\'' }, { char: 'ጮ', phonetic: 'CH\'o' }] },
-    { basePhonetic: 'P', family: [{ char: 'ጰ', phonetic: 'P\'e' }, { char: 'ጱ', phonetic: 'P\'u' }, { char: 'ጲ', phonetic: 'P\'i' }, { char: 'ጳ', phonetic: 'P\'a' }, { char: 'ጴ', phonetic: 'P\'e*' }, { char: 'ጵ', phonetic: 'P\'' }, { char: 'ጶ', phonetic: 'P\'o' }] },
-    { basePhonetic: 'TS', family: [{ char: 'ጸ', phonetic: 'TS\'e' }, { char: 'ጹ', phonetic: 'TS\'u' }, { char: 'ጺ', phonetic: 'TS\'i' }, { char: 'ጻ', phonetic: 'TS\'a' }, { char: 'ጼ', phonetic: 'TS\'e*' }, { char: 'ጽ', phonetic: 'TS\'' }, { char: 'ጾ', phonetic: 'TS\'o' }] },
-    { basePhonetic: 'TS', family: [{ char: 'ፀ', phonetic: 'TS\'e' }, { char: 'ፁ', phonetic: 'TS\'u' }, { char: 'ፂ', phonetic: 'TS\'i' }, { char: 'ፃ', phonetic: 'TS\'a' }, { char: 'ፄ', phonetic: 'TS\'e*' }, { char: 'ፅ', phonetic: 'TS\'' }, { char: 'ፆ', phonetic: 'TS\'o' }] },
-    { basePhonetic: 'f', family: [{ char: 'ፈ', phonetic: 'fe' }, { char: 'ፉ', phonetic: 'fu' }, { char: 'ፊ', phonetic: 'fi' }, { char: 'ፋ', phonetic: 'fa' }, { char: 'ፌ', phonetic: 'fe*' }, { char: 'ፍ', phonetic: 'f' }, { char: 'ፎ', phonetic: 'fo' }] },
-    { basePhonetic: 'p', family: [{ char: 'ፐ', phonetic: 'pe' }, { char: 'ፑ', phonetic: 'pu' }, { char: 'ፒ', phonetic: 'pi' }, { char: 'ፓ', phonetic: 'pa' }, { char: 'ፔ', phonetic: 'pe*' }, { char: 'ፕ', phonetic: 'p' }, { char: 'ፖ', phonetic: 'po' }] }
-];
-
+import { Lesson, Unit, VocabularyItem } from './types';
 
 export const vocabularyData: VocabularyItem[] = [
-    { id: '1', amharic: 'ሰላም', english: 'Hello / Peace', phonetic: 'Salam', category: 'Greetings' },
+    // Greetings
+    { id: '1', amharic: 'ሰላም', english: 'Hello / Peace', phonetic: 'Selam', category: 'Greetings' },
     { id: '2', amharic: 'አመሰግናለሁ', english: 'Thank you', phonetic: 'Ameseginalehu', category: 'Greetings' },
-    { id: '3', amharic: 'ውሃ', english: 'Water', phonetic: 'Wuha', category: 'Food' },
+    { id: '6', amharic: 'እንደምን አለህ', english: 'How are you? (to a man)', phonetic: 'Endemin aleh', category: 'Greetings' },
+    { id: '7', amharic: 'እንደምን አለሽ', english: 'How are you? (to a woman)', phonetic: 'Endemin alesh', category: 'Greetings' },
+    { id: '58', amharic: 'ጤና ይስጥልኝ', english: 'Hello (formal)', phonetic: 'Tena yistilign', category: 'Greetings' },
+
+    // Basics
+    { id: '8', amharic: 'አዎ', english: 'Yes', phonetic: 'Awo', category: 'Basic' },
+    { id: '9', amharic: 'አይ', english: 'No', phonetic: 'Ay', category: 'Basic' },
+    { id: '61', amharic: 'እሺ', english: 'Okay', phonetic: 'Ishi', category: 'Basic' },
+    { id: '62', amharic: 'ምንድን ነው?', english: 'What is it?', phonetic: 'Mindin new?', category: 'Basic' },
+
+    // Family
     { id: '4', amharic: 'እናት', english: 'Mother', phonetic: 'Enat', category: 'Family' },
     { id: '5', amharic: 'አባት', english: 'Father', phonetic: 'Abat', category: 'Family' },
-    { id: '6', amharic: 'እንደምን አለህ', english: 'How are you? (M)', phonetic: 'Endemin aleh', category: 'Greetings' },
-    { id: '7', amharic: 'እንደምን አለሽ', english: 'How are you? (F)', phonetic: 'Endemin alesh', category: 'Greetings' },
-    { id: '8', amharic: 'አዎ', english: 'Yes', phonetic: 'Awo', category: 'Basic' },
-    { id: '9', amharic: 'አይ', english: 'No', phonetic: 'Aye', category: 'Basic' },
-    { id: '10', amharic: 'ቤት', english: 'House', phonetic: 'Bet', category: 'Places' },
+    { id: '63', amharic: 'ወንድም', english: 'Brother', phonetic: 'Wendim', category: 'Family' },
+    { id: '64', amharic: 'እህት', english: 'Sister', phonetic: 'Ehit', category: 'Family' },
+    { id: '65', amharic: 'ልጅ', english: 'Child', phonetic: 'Lij', category: 'Family' },
+
+    // Numbers
     { id: '11', amharic: 'አንድ', english: 'One', phonetic: 'And', category: 'Numbers' },
     { id: '12', amharic: 'ሁለት', english: 'Two', phonetic: 'Hulet', category: 'Numbers' },
     { id: '13', amharic: 'ሶስት', english: 'Three', phonetic: 'Sost', category: 'Numbers' },
@@ -56,113 +29,240 @@ export const vocabularyData: VocabularyItem[] = [
     { id: '15', amharic: 'አምስት', english: 'Five', phonetic: 'Amist', category: 'Numbers' },
     { id: '16', amharic: 'ስድስት', english: 'Six', phonetic: 'Sidist', category: 'Numbers' },
     { id: '17', amharic: 'ሰባት', english: 'Seven', phonetic: 'Sebat', category: 'Numbers' },
-    { id: '18', amharic: 'ስምንት', english: 'Simint', phonetic: 'Eight', category: 'Numbers' },
+    { id: '18', amharic: 'ስምንት', english: 'Eight', phonetic: 'Simint', category: 'Numbers' },
     { id: '19', amharic: 'ዘጠኝ', english: 'Nine', phonetic: 'Zetegn', category: 'Numbers' },
     { id: '20', amharic: 'አስር', english: 'Ten', phonetic: 'Asir', category: 'Numbers' },
+
+    // Food & drink
+    { id: '3', amharic: 'ውሃ', english: 'Water', phonetic: 'Wuha', category: 'Food' },
+    { id: '31', amharic: 'እንጀራ', english: 'Injera (flatbread)', phonetic: 'Injera', category: 'Food' },
+    { id: '32', amharic: 'ቡና', english: 'Coffee', phonetic: 'Buna', category: 'Food' },
+    { id: '33', amharic: 'ወተት', english: 'Milk', phonetic: 'Wetet', category: 'Food' },
+    { id: '66', amharic: 'ዳቦ', english: 'Bread', phonetic: 'Dabo', category: 'Food' },
+    { id: '67', amharic: 'ሻይ', english: 'Tea', phonetic: 'Shai', category: 'Food' },
+
+    // Colors
+    { id: '43', amharic: 'ቀይ', english: 'Red', phonetic: 'Qey', category: 'Colors' },
+    { id: '44', amharic: 'ቢጫ', english: 'Yellow', phonetic: 'Bicha', category: 'Colors' },
+    { id: '45', amharic: 'አረንጓዴ', english: 'Green', phonetic: 'Arenguade', category: 'Colors' },
+    { id: '46', amharic: 'ሰማያዊ', english: 'Blue', phonetic: 'Semayawi', category: 'Colors' },
+    { id: '47', amharic: 'ጥቁር', english: 'Black', phonetic: 'Tiqur', category: 'Colors' },
+    { id: '48', amharic: 'ነጭ', english: 'White', phonetic: 'Nech', category: 'Colors' },
+
+    // Body
+    { id: '49', amharic: 'ራስ', english: 'Head', phonetic: 'Ras', category: 'Body' },
+    { id: '50', amharic: 'ዓይን', english: 'Eye', phonetic: 'Ayn', category: 'Body' },
+    { id: '51', amharic: 'እጅ', english: 'Hand', phonetic: 'Ej', category: 'Body' },
+    { id: '52', amharic: 'እግር', english: 'Foot / Leg', phonetic: 'Egir', category: 'Body' },
+    { id: '53', amharic: 'አፍ', english: 'Mouth', phonetic: 'Af', category: 'Body' },
+    { id: '54', amharic: 'ጆሮ', english: 'Ear', phonetic: 'Joro', category: 'Body' },
+
+    // Objects, animals & places
+    { id: '10', amharic: 'ቤት', english: 'House', phonetic: 'Bet', category: 'Places' },
+    { id: '34', amharic: 'ውሻ', english: 'Dog', phonetic: 'Wusha', category: 'Animals' },
+    { id: '35', amharic: 'ድመት', english: 'Cat', phonetic: 'Dimet', category: 'Animals' },
+    { id: '36', amharic: 'መጽሐፍ', english: 'Book', phonetic: 'Metsihaf', category: 'Objects' },
+    { id: '37', amharic: 'ወንበር', english: 'Chair', phonetic: 'Wenber', category: 'Objects' },
+    { id: '38', amharic: 'ጠረጴዛ', english: 'Table', phonetic: 'Terepeza', category: 'Objects' },
+
+    // Verbs
     { id: '21', amharic: 'መብላት', english: 'To eat', phonetic: 'Meblat', category: 'Verbs' },
     { id: '22', amharic: 'መጠጣት', english: 'To drink', phonetic: 'Metetat', category: 'Verbs' },
     { id: '23', amharic: 'መሄድ', english: 'To go', phonetic: 'Mehed', category: 'Verbs' },
     { id: '24', amharic: 'መምጣት', english: 'To come', phonetic: 'Memtat', category: 'Verbs' },
     { id: '25', amharic: 'አውቃለሁ', english: 'I know', phonetic: 'Awqalehu', category: 'Verbs' },
-    { id: '26', amharic: 'አላውቅም', english: 'I do not know', phonetic: 'Alawqim', category: 'Verbs' },
+    { id: '26', amharic: 'አላውቅም', english: "I don't know", phonetic: 'Alawqim', category: 'Verbs' },
+
+    // Adjectives
     { id: '27', amharic: 'ትልቅ', english: 'Big', phonetic: 'Tiliq', category: 'Adjectives' },
     { id: '28', amharic: 'ትንሽ', english: 'Small', phonetic: 'Tinish', category: 'Adjectives' },
     { id: '29', amharic: 'ቆንጆ', english: 'Beautiful', phonetic: 'Konjo', category: 'Adjectives' },
     { id: '30', amharic: 'ጥሩ', english: 'Good', phonetic: 'Tiru', category: 'Adjectives' },
-    { id: '31', amharic: 'እንጀራ', english: 'Injera (Flatbread)', phonetic: 'Injera', category: 'Food' },
-    { id: '32', amharic: 'ቡና', english: 'Coffee', phonetic: 'Buna', category: 'Food' },
-    { id: '33', amharic: 'ወተት', english: 'Milk', phonetic: 'Wetet', category: 'Food' },
-    { id: '34', amharic: 'ውሻ', english: 'Dog', phonetic: 'Wusha', category: 'Animals' },
-    { id: '35', amharic: 'ድመት', english: 'Cat', phonetic: 'Dimet', category: 'Animals' },
-    { id: '36', amharic: 'መጽሐፍ', english: 'Book', phonetic: 'Metshaf', category: 'Objects' },
-    { id: '37', amharic: 'ወንበር', english: 'Chair', phonetic: 'Wenber', category: 'Objects' },
-    { id: '38', amharic: 'ጠረጴዛ', english: 'Table', phonetic: 'Terepeza', category: 'Objects' },
+
+    // Time
     { id: '39', amharic: 'አሁን', english: 'Now', phonetic: 'Ahun', category: 'Time' },
     { id: '40', amharic: 'ነገ', english: 'Tomorrow', phonetic: 'Nege', category: 'Time' },
     { id: '41', amharic: 'ዛሬ', english: 'Today', phonetic: 'Zare', category: 'Time' },
-    { id: '42', amharic: 'ትላንት', english: 'Yesterday', phonetic: 'Tilant', category: 'Time' }
+    { id: '42', amharic: 'ትላንት', english: 'Yesterday', phonetic: 'Tilant', category: 'Time' },
+
+    // Useful phrases
+    { id: '55', amharic: 'እባክህ', english: 'Please (to a man)', phonetic: 'Ebakih', category: 'Phrases' },
+    { id: '56', amharic: 'ይቅርታ', english: 'Sorry / Excuse me', phonetic: 'Yiqirta', category: 'Phrases' },
+    { id: '57', amharic: 'ደህና ሁን', english: 'Goodbye (to a man)', phonetic: 'Dehna hun', category: 'Phrases' },
+    { id: '59', amharic: 'ስንት ነው?', english: 'How much is it?', phonetic: 'Sint new?', category: 'Phrases' },
+    { id: '60', amharic: 'አልገባኝም', english: "I don't understand", phonetic: 'Algebagnim', category: 'Phrases' },
 ];
 
-export const mockLessonsData = [
-    {
-        id: "lesson-1",
-        title: "Basic Greetings",
-        description: "Learn how to say hello and ask how people are doing.",
-        category: "Conversational",
-        difficulty: "beginner" as const,
-        xpReward: 50,
-        items: vocabularyData.filter(v => v.category === "Greetings")
-    },
-    {
-        id: "lesson-2",
-        title: "Essential Words",
-        description: "The most important words you'll need like yes and no.",
-        category: "Vocabulary",
-        difficulty: "beginner" as const,
-        xpReward: 30,
-        items: vocabularyData.filter(v => v.category === "Basic")
-    },
-    {
-        id: "lesson-3",
-        title: "Family Members",
-        description: "Identify family members such as mother and father.",
-        category: "Vocabulary",
-        difficulty: "beginner" as const,
-        xpReward: 40,
-        items: vocabularyData.filter(v => v.category === "Family")
-    },
-    {
-        id: "lesson-4",
-        title: "Numbers 1-10",
-        description: "Learn to count from one to ten in Amharic.",
-        category: "Vocabulary",
-        difficulty: "beginner" as const,
-        xpReward: 60,
-        items: vocabularyData.filter(v => v.category === "Numbers")
-    },
-    {
-        id: "lesson-5",
-        title: "Food & Drink",
-        description: "Essential vocabulary for eating and drinking.",
-        category: "Vocabulary",
-        difficulty: "beginner" as const,
-        xpReward: 50,
-        items: vocabularyData.filter(v => v.category === "Food")
-    },
-    {
-        id: "lesson-6",
-        title: "Common Verbs",
-        description: "Learn the most frequently used action words.",
-        category: "Grammar",
-        difficulty: "intermediate" as const,
-        xpReward: 80,
-        items: vocabularyData.filter(v => v.category === "Verbs")
-    },
-    {
-        id: "lesson-7",
-        title: "Describing Things",
-        description: "Basic adjectives to describe size, quality, and more.",
-        category: "Vocabulary",
-        difficulty: "intermediate" as const,
-        xpReward: 50,
-        items: vocabularyData.filter(v => v.category === "Adjectives")
-    },
-    {
-        id: "lesson-8",
-        title: "Time Context",
-        description: "Words for today, tomorrow, yesterday, and now.",
-        category: "Vocabulary",
-        difficulty: "intermediate" as const,
-        xpReward: 45,
-        items: vocabularyData.filter(v => v.category === "Time")
-    },
-    {
-        id: "lesson-9",
-        title: "Objects & Animals",
-        description: "Everyday items and common animals.",
-        category: "Vocabulary",
-        difficulty: "beginner" as const,
-        xpReward: 60,
-        items: vocabularyData.filter(v => v.category === "Objects" || v.category === "Animals")
-    }
+export const VOCAB_CATEGORIES = Array.from(new Set(vocabularyData.map((v) => v.category)));
+
+const byCategory = (...categories: string[]) =>
+    vocabularyData.filter((v) => categories.includes(v.category));
+
+export const units: Unit[] = [
+    { id: 1, title: 'First Steps', subtitle: 'Greet people, count, and talk about family.', accent: 'jade' },
+    { id: 2, title: 'Everyday Life', subtitle: 'Food, colors, your body, and the things around you.', accent: 'gold' },
+    { id: 3, title: 'Getting Fluent', subtitle: 'Actions, descriptions, time, and handy phrases.', accent: 'lapis' },
 ];
+
+export const lessons: Lesson[] = [
+    {
+        id: 'lesson-1',
+        title: 'Basic Greetings',
+        description: 'Say hello, thank people, and ask how they are doing.',
+        unit: 1,
+        place: { en: 'Addis Ababa', am: 'አዲስ አበባ' },
+        glyph: 'ሰ',
+        difficulty: 'beginner',
+        xpReward: 50,
+        items: byCategory('Greetings'),
+    },
+    {
+        id: 'lesson-2',
+        title: 'Essential Words',
+        description: 'Yes, no, okay — the words you will use every single day.',
+        unit: 1,
+        place: { en: 'Bahir Dar', am: 'ባሕር ዳር' },
+        glyph: 'አ',
+        difficulty: 'beginner',
+        xpReward: 30,
+        items: byCategory('Basic'),
+    },
+    {
+        id: 'lesson-3',
+        title: 'Family Members',
+        description: 'Talk about your mother, father, brothers, and sisters.',
+        unit: 1,
+        place: { en: 'Gondar', am: 'ጎንደር' },
+        glyph: 'እ',
+        difficulty: 'beginner',
+        xpReward: 40,
+        items: byCategory('Family'),
+    },
+    {
+        id: 'lesson-4',
+        title: 'Numbers 1–10',
+        description: 'Count from one to ten like a local.',
+        unit: 1,
+        place: { en: 'Lalibela', am: 'ላሊበላ' },
+        glyph: 'ስ',
+        difficulty: 'beginner',
+        xpReward: 60,
+        items: byCategory('Numbers'),
+    },
+    {
+        id: 'lesson-5',
+        title: 'Food & Drink',
+        description: 'Order coffee, injera, and everything in between.',
+        unit: 2,
+        place: { en: 'Jimma', am: 'ጅማ' },
+        glyph: 'ቡ',
+        difficulty: 'beginner',
+        xpReward: 50,
+        items: byCategory('Food'),
+    },
+    {
+        id: 'lesson-10',
+        title: 'Colors',
+        description: 'Red, yellow, green — and the rest of the rainbow.',
+        unit: 2,
+        place: { en: 'Harar', am: 'ሐረር' },
+        glyph: 'ቀ',
+        difficulty: 'beginner',
+        xpReward: 45,
+        items: byCategory('Colors'),
+    },
+    {
+        id: 'lesson-11',
+        title: 'The Body',
+        description: 'Head, eyes, hands, and feet.',
+        unit: 2,
+        place: { en: 'Hawassa', am: 'ሀዋሳ' },
+        glyph: 'ራ',
+        difficulty: 'beginner',
+        xpReward: 45,
+        items: byCategory('Body'),
+    },
+    {
+        id: 'lesson-9',
+        title: 'Objects & Animals',
+        description: 'Everyday things, a home, and the animals around it.',
+        unit: 2,
+        place: { en: 'Arba Minch', am: 'አርባ ምንጭ' },
+        glyph: 'ው',
+        difficulty: 'beginner',
+        xpReward: 60,
+        items: byCategory('Objects', 'Animals', 'Places'),
+    },
+    {
+        id: 'lesson-6',
+        title: 'Common Verbs',
+        description: 'Eat, drink, come, go — the actions behind every sentence.',
+        unit: 3,
+        place: { en: 'Axum', am: 'አክሱም' },
+        glyph: 'መ',
+        difficulty: 'intermediate',
+        xpReward: 80,
+        items: byCategory('Verbs'),
+    },
+    {
+        id: 'lesson-7',
+        title: 'Describing Things',
+        description: 'Big, small, good, beautiful.',
+        unit: 3,
+        place: { en: 'Mekelle', am: 'መቀሌ' },
+        glyph: 'ቆ',
+        difficulty: 'intermediate',
+        xpReward: 50,
+        items: byCategory('Adjectives'),
+    },
+    {
+        id: 'lesson-8',
+        title: 'Time',
+        description: 'Yesterday, today, tomorrow, and right now.',
+        unit: 3,
+        place: { en: 'Dire Dawa', am: 'ድሬ ዳዋ' },
+        glyph: 'ዛ',
+        difficulty: 'intermediate',
+        xpReward: 45,
+        items: byCategory('Time'),
+    },
+    {
+        id: 'lesson-12',
+        title: 'Useful Phrases',
+        description: 'Please, sorry, goodbye, and how much is it?',
+        unit: 3,
+        place: { en: 'Simien Mountains', am: 'ሰሜን ተራሮች' },
+        glyph: 'ይ',
+        difficulty: 'intermediate',
+        xpReward: 70,
+        items: byCategory('Phrases'),
+    },
+];
+
+/** Kept for older imports. */
+export const mockLessonsData = lessons;
+
+export function getLesson(id: string) {
+    return lessons.find((l) => l.id === id);
+}
+
+export function lessonIndex(id: string) {
+    return lessons.findIndex((l) => l.id === id);
+}
+
+/** A lesson is open once the one before it is done (or it was already done). */
+export function isLessonUnlocked(index: number, completed: string[]) {
+    if (index <= 0) return true;
+    return completed.includes(lessons[index].id) || completed.includes(lessons[index - 1].id);
+}
+
+export function nextLessonFor(completed: string[]) {
+    return lessons.find((l) => !completed.includes(l.id)) ?? null;
+}
+
+/** The same word all day, a new one tomorrow. */
+export function wordOfTheDay(key: string) {
+    let hash = 0;
+    for (const ch of key) hash = (hash * 31 + ch.charCodeAt(0)) >>> 0;
+    return vocabularyData[hash % vocabularyData.length];
+}
